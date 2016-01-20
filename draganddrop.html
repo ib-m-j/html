@@ -3,19 +3,19 @@
 <html>
 <head>
 <style>
-  #table {width:100%; padding:2px; font-size:3em; border-spacing:10px;}
+#table {width:100%; padding:2px; font-size:3em; border-spacing:10px;}
 #other {position:absolute; top:300px; width:20px;height:20px;padding:10px;border:1px solid #aaaaaa;}
-#drag2 {draggable="true"; ondragstart=drag(event)}
 #namelist {list-style-type:none; padding:10px; margin:10px;}
 #table div {background-color:lightgrey; padding:3px;}
 #table td { margin:5px;}
 .dropzone {height:150px; background-color:"#555555"; text-align:center; 
            border:solid black 1px; padding-left:10px; padding-right:10px;}
-.dragable {height: 150px; font-size:2.5em;   
+.unseatedPlayer {height: 150px; font-size:2.5em;   
            background-color:lightgrey; margin:1px; border-radius:5px; 
            padding-left:5px; min-width: 100px;  padding-right:5px; margin:10px; 
            display:inline-block; text-align:center;}
-
+.seat {border:solid black 1px; width: calc((100% - 9em;) / 2); height:7em; 
+        block-sizing:border-box; padding-left: 5px; padding-top:5px;}
 </style>
 <script src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
 <script src="http://code.jquery.com/ui/1.8.21/jquery-ui.min.js"></script>
@@ -94,7 +94,7 @@ document.getElementById("status").innerHTML= document.getElementById("status").i
 
 $(document).ready(function(){
   setStatus("document ready");
-  $(".dragable").on({
+  $(".unseatedPlayer").on({
       'touchstart': function(ev) {var e = ev.originalEvent; touchStart(e);},
       'touchmove': function(ev) {var e = ev.originalEvent; touchMove(e);},
       'touchend': function(ev){var e = ev.originalEvent; touchEnd(e); }
@@ -120,14 +120,64 @@ document.getElementById("plads"+((start+i)%4)).innerHTML = dirs[i] + document.ge
 </head>
 <body ">
 <ul id="namelist">
-<li id="name1" class="dragable">Einar</li>
-<li id="name2" class="dragable">Guddie</li>
-<li id="name3" class="dragable">Philippe</li>
-<li id="name4" class="dragable">Ib</li>
-<li id="name5" class="dragable">Bente</li>
-<li id="name6" class="dragable">longername6</li>
-<li id="name7" class="dragable">longername7</li>
+<li id="name1" class="unseatedPlayer">Einar</li>
+<li id="name2" class="unseatedPlayer">Guddie</li>
+<li id="name3" class="unseatedPlayer">Philippe</li>
+<li id="name4" class="unseatedPlayer">Ib</li>
+<li id="name5" class="unseatedPlayer">Bente</li>
+<li id="name6" class="unseatedPlayer">longername6</li>
+<li id="name7" class="unseatedPlayer">longername7</li>
 </ul>
+
+<!--.seat {border:solid black 1px; width: calc((100% - 9em;) / 2); height:7em; 
+        block-sizing:border-box; padding-left: 5px; padding-top:5px;}
+-->
+
+	    
+<div class="seat" style="margin: 10px auto; ">Nord
+  <div style="font-size:4em; margin: 0.1em auto 0.1em; text-align:center ">plads1</div>
+</div>
+
+<div class="seat" style="display:inline-table; margin: 0px auto;">Vest
+  <div style="font-size:4em; margin: 0.1em auto 0.1em; text-align:center">plads4</div>
+</div>
+
+<div style="display:inline-table; height:7em; width:7em; margin: 5px auto;  block-sizing:border-box;" >
+  <div style="font-size:4em; margin: 0.1em auto 0.1em; text-align:center"></div>
+</div>
+
+<div  class="seat" style="display:inline-table;  margin: 0px auto; ">Øst
+  <div style="font-size:4em; margin: 0.1emx auto 0.1em; text-align:center ">plads2</div>
+</div>
+
+<div class="seat" style="margin: 0px auto;">Syd
+ <div style="font-size:4em; margin: 0.1em auto 0.1em; text-align:center ">plads3</div>
+</div>
+
+
+=======================
+<div class="seat" style="margin: 5px auto;">
+  <div style="font-size:1em; margin: 0.2em 0.2em 0.2em;">Norddd</div>
+  <div style="font-size:4em; margin: 0.1em auto 0.1em; text-align:center">plads1</div>
+</div>
+
+<div class = "seat" style="display:inline-block;">
+  <div style="font-size:1em; margin: 0.2em 0.2em 0.2em;">Norddd</div>
+  <div style="font-size:4em; margin: 0.1em auto 0.1em; text-align:center">plads1</div>
+</div>
+<div style="width:80px; height:7em;; border:solid black 1px; display:inline-block;">space</div>
+<div class="seat" style="border:solid black 1px; display:inline-block;">
+  <div style="font-size:1em; margin: 0.2em 0.2em 0.2em;">Norddd</div>
+  <div style="font-size:4em; margin: 0.1em auto 0.1em; text-align:center">plads1</div>
+</div>
+<div class="seat" style="margin: 5px auto;">
+  <div style="font-size:1em; margin: 0.2em 0.4em 0.2em;">Syd</div>
+  <div style="font-size:4em; margin: 0.1em auto 0.1em; text-align:center">plads3</div>
+</div>
+
+
+
+
 
 <table id="table" >
 <tr >
@@ -143,9 +193,6 @@ document.getElementById("plads"+((start+i)%4)).innerHTML = dirs[i] + document.ge
 height:200px; background-color:lightgreen; display:inline-block;" >status1
 </div>
 <div id="status1" style="font-size:2em; width:300px; height:200px; background-color:lightgreen; display:inline-block; float:right;" >
-</div>
-<div id="direction" style="margin:30px" draggable="true" ondragstart="drag(event)" >
-Nortd
 </div>
 <p style="font-size:2.5em;">
 Træk først navne hen på pladserne. Klik dernæst på din plads.
