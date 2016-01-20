@@ -1,0 +1,153 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+<style>
+  #table {width:100%; padding:2px; font-size:3em; border-spacing:10px;}
+#other {position:absolute; top:300px; width:20px;height:20px;padding:10px;border:1px solid #aaaaaa;}
+#drag2 {draggable="true"; ondragstart=drag(event)}
+#namelist {list-style-type:none; padding:10px; margin:10px;}
+#table div {background-color:lightgrey; padding:3px;}
+#table td { margin:5px;}
+.dropzone {height:150px; background-color:"#555555"; text-align:center; 
+           border:solid black 1px; padding-left:10px; padding-right:10px;}
+.dragable {height: 150px; font-size:2.5em;   
+           background-color:lightgrey; margin:1px; border-radius:5px; 
+           padding-left:5px; min-width: 100px;  padding-right:5px; margin:10px; 
+           display:inline-block; text-align:center;}
+
+</style>
+<script src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
+<script src="http://code.jquery.com/ui/1.8.21/jquery-ui.min.js"></script>
+<script>
+
+var dropBgColor = "#cccccc";
+var dropzoneBgColor = "#555555";
+var dropName = "";
+
+function touchStart(event) {
+  var touch = event.changedTouches[0];
+  event.preventDefault();
+  dropName = touch.target.id;
+  setStatus("Starting with touch" + dropName);
+  touch.target.style.backgroundColor = "white";
+}
+
+function setToBottom(ev) {
+  event.preventDefault();
+  var touch = event.changedTouches[0];
+  var oldTexts = new Array;
+  var newTexts = new Array;
+  var ids = ["Nord", "Øst", "Syd", "Vest"];
+  
+  var bottomId = ids.indexOf(document.getElementById(touch.target.id));
+
+  for (i = 0; i < ids.length; i++) {  
+     oldTexts[i] = document.getElementById([ids[i]]).innerHTML;
+  };
+
+  for (i = 0; i < ids.length; i++) {
+     newTexts[(i + bottomId) % 4] =  oldTexts[i];
+  };
+
+  for (i = 0; i < ids.length; i++) {  
+     document.getElementById([ids[i]]).innerHTML = newTexts[i];
+  };
+}
+
+function touchMove(event) {
+  event.preventDefault();
+}
+
+function dropTouch(from, to) {
+  to.innerHTML=to.id + ": " +  from.innerHTML;
+  to.style.backgroundColor = "#cccccc";
+  from.style.backgroundColor="white";
+  dropName = "";
+}
+
+function touchEnd(event) {
+event.preventDefault();
+var touch = event.changedTouches[0];
+setStatus("starting tounch end ");
+var el = document.elementFromPoint(touch.clientX, touch.clientY);
+addStatus(el.id);
+addStatus(dropName);
+addStatus(el.className);
+addStatus(el.className == "dropzone");
+if (el.className == "dropzone") {
+  dropTouch(document.getElementById(dropName), el);
+} else {
+  document.getElementById(dropName).style.backgroundColor = dropBgColor;
+  dropName = "";
+}
+}
+
+function setStatus(x) {
+document.getElementById("status").innerHTML= x;
+}
+
+function addStatus(x) {
+document.getElementById("status").innerHTML= document.getElementById("status").innerHTML + "<br>" + x;
+}
+
+
+$(document).ready(function(){
+  setStatus("document ready");
+  $(".dragable").on({
+      'touchstart': function(ev) {var e = ev.originalEvent; touchStart(e);},
+      'touchmove': function(ev) {var e = ev.originalEvent; touchMove(e);},
+      'touchend': function(ev){var e = ev.originalEvent; touchEnd(e); }
+     });
+
+  $(".dropzone").on(
+      'touchstart', function(ev) {var e = ev.originalEvent; setToBottom(e);});
+});
+
+
+function setdirs(target) {
+var texts = ["aa","bb","cc"];
+var dirs = ["North", "East", "South", "West"]
+var res = "";
+var start = Number(target[target.length - 1]);
+//window.alert(start+" "+((start+0)%4));
+for (i=0;i<4;i++) {
+document.getElementById("plads"+((start+i)%4)).innerHTML = dirs[i] + document.getElementById("plads"+((start+i)%4)).innerHTML ;
+//window.alert("plads"+((start+i)%4)+"  "+i+" "+start+" "+(start+i));
+}
+}
+</script>
+</head>
+<body ">
+<ul id="namelist">
+<li id="name1" class="dragable">Einar</li>
+<li id="name2" class="dragable">Guddie</li>
+<li id="name3" class="dragable">Philippe</li>
+<li id="name4" class="dragable">Ib</li>
+<li id="name5" class="dragable">Bente</li>
+<li id="name6" class="dragable">longername6</li>
+<li id="name7" class="dragable">longername7</li>
+</ul>
+
+<table id="table" >
+<tr >
+  <td colspan=2 id="Nord" class="dropzone">Nord
+<tr>
+<td id="Vest" style="width:50%" class="dropzone">Vest
+<td id="Øst" class="dropzone" >Øst
+<tr>
+<td colspan=2 id="Syd" class="dropzone">Syd
+</table>
+
+<div id="status" style="font-size:2em; width:300px; 
+height:200px; background-color:lightgreen; display:inline-block;" >status1
+</div>
+<div id="status1" style="font-size:2em; width:300px; height:200px; background-color:lightgreen; display:inline-block; float:right;" >
+</div>
+<div id="direction" style="margin:30px" draggable="true" ondragstart="drag(event)" >
+Nortd
+</div>
+<p style="font-size:2.5em;">
+Træk først navne hen på pladserne. Klik dernæst på din plads.
+</body>
+</html>
