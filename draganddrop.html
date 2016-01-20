@@ -16,6 +16,15 @@
            display:inline-block; text-align:center;}
 .seat {border:solid black 1px; width: calc((100% - 9em;) / 2); height:7em; 
         block-sizing:border-box; padding-left: 5px; padding-top:5px;}
+ .seatdata {font-size:3em; margin: 0.1em auto 0.1em; text-align:center; 
+            white-space:nowrap; overflow:hidden;}
+    .no-overflow {
+        display:inline-block;
+        white-space:nowrap;
+        position:relative; /* must be relative */
+        width:100%; /* fit to table cell width */
+        margin-right:-1000px; /* technically this is a less than zero width object */
+        overflow:hidden;}
 </style>
 <script src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
 <script src="http://code.jquery.com/ui/1.8.21/jquery-ui.min.js"></script>
@@ -59,9 +68,9 @@ function touchMove(event) {
   event.preventDefault();
 }
 
-function dropTouch(from, to) {
-  to.innerHTML=to.id + ": " +  from.innerHTML;
-  to.style.backgroundColor = "#cccccc";
+function dropTouch(from, toParent, toChild) {
+  toChild.innerHTML = from.innerHTML;
+  toParent.style.backgroundColor = "#cccccc";
   from.style.backgroundColor="white";
   dropName = "";
 }
@@ -71,13 +80,25 @@ event.preventDefault();
 var touch = event.changedTouches[0];
 setStatus("starting tounch end ");
 var el = document.elementFromPoint(touch.clientX, touch.clientY);
-addStatus(el.id);
-addStatus(dropName);
-addStatus(el.className);
-addStatus(el.className == "dropzone");
-if (el.className == "dropzone") {
-  dropTouch(document.getElementById(dropName), el);
-} else {
+setStatus("fandt element" + el.id);
+var returnValue;
+if (el.className == "seat") {
+  var children = $("#"+el.id).find("div");
+  addStatus("nu her i seat" + children[0].className);
+  returnValue = [el, children[0]];
+}
+else if (el.className =="seatdata") {
+  addStatus("nu her");
+  returnValue = [el.parentNode, el];
+}
+else {
+returnValue = "";
+}
+addStatus("returnValue " + returnValue);      		  
+if (returnValue != "") {
+  dropTouch(document.getElementById(dropName), returnValue[0], returnValue[1]);
+} 
+else {
   document.getElementById(dropName).style.backgroundColor = dropBgColor;
   dropName = "";
 }
@@ -125,72 +146,36 @@ document.getElementById("plads"+((start+i)%4)).innerHTML = dirs[i] + document.ge
 <li id="name3" class="unseatedPlayer">Philippe</li>
 <li id="name4" class="unseatedPlayer">Ib</li>
 <li id="name5" class="unseatedPlayer">Bente</li>
-<li id="name6" class="unseatedPlayer">longername6</li>
+<li id="name6" class="unseatedPlayer">longerme6</li>
 <li id="name7" class="unseatedPlayer">longername7</li>
 </ul>
 
 <!--.seat {border:solid black 1px; width: calc((100% - 9em;) / 2); height:7em; 
         block-sizing:border-box; padding-left: 5px; padding-top:5px;}
 -->
-
 	    
-<div class="seat" style="margin: 10px auto; ">Nord
-  <div style="font-size:4em; margin: 0.1em auto 0.1em; text-align:center ">plads1</div>
+<div id="plads1" class="seat" style="margin: 10px auto;">Nord
+  <div class="seatdata">plads1</div>
 </div>
 
-<div class="seat" style="display:inline-table; margin: 0px auto;">Vest
-  <div style="font-size:4em; margin: 0.1em auto 0.1em; text-align:center">plads4</div>
+<div id="plads4" class="seat" style="display:inline-table; margin: 0px auto;">Vest
+  <div class="seatdata" style="white-space:nowrap; overflow:hidden;"></div>
 </div>
 
-<div style="display:inline-table; height:7em; width:7em; margin: 5px auto;  block-sizing:border-box;" >
-  <div style="font-size:4em; margin: 0.1em auto 0.1em; text-align:center"></div>
+<div id="space" style="display:inline-table; height:7em; width:7em; margin: 5px auto;  block-sizing:border-box;" >
+  <div class="seatdata"></div>
 </div>
 
-<div  class="seat" style="display:inline-table;  margin: 0px auto; ">Øst
-  <div style="font-size:4em; margin: 0.1emx auto 0.1em; text-align:center ">plads2</div>
+<div  id="plads3" class="seat" style="display:inline-table;  margin: 0px auto; ">Øst
+  <div class="seatdata"></div>
 </div>
 
-<div class="seat" style="margin: 0px auto;">Syd
- <div style="font-size:4em; margin: 0.1em auto 0.1em; text-align:center ">plads3</div>
+<div id="plads2" class="seat" style="margin: 0px auto;">Syd
+ <div class="seatdata"></div>
 </div>
-
-
-=======================
-<div class="seat" style="margin: 5px auto;">
-  <div style="font-size:1em; margin: 0.2em 0.2em 0.2em;">Norddd</div>
-  <div style="font-size:4em; margin: 0.1em auto 0.1em; text-align:center">plads1</div>
-</div>
-
-<div class = "seat" style="display:inline-block;">
-  <div style="font-size:1em; margin: 0.2em 0.2em 0.2em;">Norddd</div>
-  <div style="font-size:4em; margin: 0.1em auto 0.1em; text-align:center">plads1</div>
-</div>
-<div style="width:80px; height:7em;; border:solid black 1px; display:inline-block;">space</div>
-<div class="seat" style="border:solid black 1px; display:inline-block;">
-  <div style="font-size:1em; margin: 0.2em 0.2em 0.2em;">Norddd</div>
-  <div style="font-size:4em; margin: 0.1em auto 0.1em; text-align:center">plads1</div>
-</div>
-<div class="seat" style="margin: 5px auto;">
-  <div style="font-size:1em; margin: 0.2em 0.4em 0.2em;">Syd</div>
-  <div style="font-size:4em; margin: 0.1em auto 0.1em; text-align:center">plads3</div>
-</div>
-
-
-
-
-
-<table id="table" >
-<tr >
-  <td colspan=2 id="Nord" class="dropzone">Nord
-<tr>
-<td id="Vest" style="width:50%" class="dropzone">Vest
-<td id="Øst" class="dropzone" >Øst
-<tr>
-<td colspan=2 id="Syd" class="dropzone">Syd
-</table>
 
 <div id="status" style="font-size:2em; width:300px; 
-height:200px; background-color:lightgreen; display:inline-block;" >status1
+height:200px; background-color:lightgreen; display:inline-block;" >
 </div>
 <div id="status1" style="font-size:2em; width:300px; height:200px; background-color:lightgreen; display:inline-block; float:right;" >
 </div>
