@@ -71,37 +71,38 @@ function touchMove(event) {
 function dropTouch(from, toParent, toChild) {
   toChild.innerHTML = from.innerHTML;
   toParent.style.backgroundColor = "#cccccc";
-  from.style.backgroundColor="white";
+  $('#'+from.id).detach();
+//  from.style.backgroundColor="white";
   dropName = "";
 }
 
 function touchEnd(event) {
-event.preventDefault();
-var touch = event.changedTouches[0];
-setStatus("starting tounch end ");
-var el = document.elementFromPoint(touch.clientX, touch.clientY);
-setStatus("fandt element" + el.id);
-var returnValue;
-if (el.className == "seat") {
-  var children = $("#"+el.id).find("div");
-  addStatus("nu her i seat" + children[0].className);
-  returnValue = [el, children[0]];
-}
-else if (el.className =="seatdata") {
-  addStatus("nu her");
-  returnValue = [el.parentNode, el];
-}
-else {
-returnValue = "";
-}
-addStatus("returnValue " + returnValue);      		  
-if (returnValue != "") {
-  dropTouch(document.getElementById(dropName), returnValue[0], returnValue[1]);
-} 
-else {
-  document.getElementById(dropName).style.backgroundColor = dropBgColor;
-  dropName = "";
-}
+    event.preventDefault();
+    var touch = event.changedTouches[0];
+    setStatus("starting tounch end ");
+    var el = document.elementFromPoint(touch.clientX, touch.clientY);
+    setStatus("fandt element" + el.id);
+    var returnValue;
+    if (el.className == "seat") {
+      var children = $("#"+el.id).find("div");
+      addStatus("nu her i seat" + children[0].className);
+      returnValue = [el, children[0]];
+    }
+    else if (el.className =="seatdata") {
+      addStatus("nu her");
+      returnValue = [el.parentNode, el];
+    }
+    else {
+    returnValue = "";
+    }
+    addStatus("returnValue " + returnValue);      		  
+    if (returnValue != "") {
+      dropTouch(document.getElementById(dropName), returnValue[0], returnValue[1]);
+    } 
+    else {
+      document.getElementById(dropName).style.backgroundColor = dropBgColor;
+      dropName = "";
+    }
 }
 
 function setStatus(x) {

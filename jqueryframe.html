@@ -1,0 +1,42 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<style>
+</style>
+<script src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
+<script src="http://code.jquery.com/ui/1.8.21/jquery-ui.min.js"></script>
+<script>
+var currentno = 100;
+
+function detach() {
+   var iden = "name4";
+ //  $('[id='+iden+']').detach();
+   $('#'+iden).detach();
+   
+}
+
+function attach(name) {
+   var person = prompt("Skriv navnet", "")
+   if (person != null) {
+     $('#namelist').prepend('<li id="name' + currentno + '" class="unseatedPlayer">' + person + '</li>');
+     $('li').css('color','red');
+}
+
+}
+
+</script>
+</head>
+<body ">
+<ul id="namelist">
+<li id="name1" class="unseatedPlayer">Einar</li>
+<li id="name2" class="unseatedPlayer">Guddie</li>
+<li id="name3" class="unseatedPlayer">Philippe</li>
+<li id="name4" class="unseatedPlayer">Ib</li>
+<li id="name5" class="unseatedPlayer">Bente</li>
+<li id="name6" class="unseatedPlayer">longerme6</li>
+<li id="name7" class="unseatedPlayer">longername7</li>
+</ul>
+<button type="button" onclick="detach()" > detach <!button>
+<button type="button" onclick="attach()" > attach <!button>
+</body>
+</html>
