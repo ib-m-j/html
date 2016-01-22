@@ -11,13 +11,15 @@
 .dropzone {height:150px; background-color:"#555555"; text-align:center; 
            border:solid black 1px; padding-left:10px; padding-right:10px;}
 .unseatedPlayer {height: 150px; font-size:2.5em;   
-           background-color:lightgrey; margin:1px; border-radius:5px; 
+           background-color:lightgrey; margin:1px; border-radius:10px; 
            padding-left:5px; min-width: 100px;  padding-right:5px; margin:10px; 
            display:inline-block; text-align:center;}
-.seat {border:solid black 1px; width: calc((100% - 9em;) / 2); height:7em; 
-        block-sizing:border-box; padding-left: 5px; padding-top:5px;}
+.seat {border:solid black 1px; border-radius:10px; width: 
+       calc((100% - 9em;) / 2);  
+        block-sizing:border-box; padding-left: 5px; padding-top:5px;
+        text-overflow:clip; overflow:hidden; height:7em;}
  .seatdata {font-size:3em; margin: 0.1em auto 0.1em; text-align:center; 
-            white-space:nowrap; overflow:hidden;}
+            white-space:nowrap; text-overflow:clip; overflow:hidden;}
     .no-overflow {
         display:inline-block;
         white-space:nowrap;
@@ -151,29 +153,44 @@ document.getElementById("plads"+((start+i)%4)).innerHTML = dirs[i] + document.ge
 <li id="name7" class="unseatedPlayer">longername7</li>
 </ul>
 
-<!--.seat {border:solid black 1px; width: calc((100% - 9em;) / 2); height:7em; 
-        block-sizing:border-box; padding-left: 5px; padding-top:5px;}
+</--.seat {border:solid black 1px; width: calc((100% - 9em;) / 2);  
+        block-sizing:border-box; padding-left: 5px; padding-top:5px;
+        text-overflow:clip; overflow:hidden; text-align:center;
+        display:table-cell; height:7em;}
 -->
+
+
+
+<div id="plads1" class="seat" style="margin:0 auto;">Nord
+  <div class="seatdata" >llllllllllllllllplalækasdfds1</div>
+</div>
+
 	    
-<div id="plads1" class="seat" style="margin: 10px auto;">Nord
-  <div class="seatdata">plads1</div>
-</div>
+<div style="display:table; padding: 8px; width:100%; table-layout:fixed;">
+   <div style="display:table-row; height:7em; ">
+     <div id="plads4" class="seat" 
+	  style="display:table-cell;">Vest
+       <div class="seatdata">læsdlfj fkj kjl jlj ljlkj
+       </div>
+     </div>
+     
+     <div id="space" 
+	  style="display:table-cell; width:7em; margin: 5px auto;  
+		 block-sizing:border-box;" >
+     </div>
 
-<div id="plads4" class="seat" style="display:inline-table; margin: 0px auto;">Vest
-  <div class="seatdata" style="white-space:nowrap; overflow:hidden;"></div>
-</div>
+     <div  id="plads3" class="seat" 
+	   style="display:table-cell; ">Øst
+       <div class="seatdata"> ss</div>
+     </div>
 
-<div id="space" style="display:inline-table; height:7em; width:7em; margin: 5px auto;  block-sizing:border-box;" >
-  <div class="seatdata"></div>
-</div>
-
-<div  id="plads3" class="seat" style="display:inline-table;  margin: 0px auto; ">Øst
-  <div class="seatdata"></div>
+   </div>
 </div>
 
 <div id="plads2" class="seat" style="margin: 0px auto;">Syd
- <div class="seatdata"></div>
+  <div class="seatdata">ss</div>
 </div>
+
 
 <div id="status" style="font-size:2em; width:300px; 
 height:200px; background-color:lightgreen; display:inline-block;" >
