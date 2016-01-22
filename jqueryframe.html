@@ -2,6 +2,13 @@
 <html>
 <head>
 <style>
+#namelist {list-style-type:none; padding:10px; margin:10px; white-space:nowrap; height:300px; width:100%; overflow-hidden; overflow-x:auto;}
+.unseatedPlayer {height: 120px; font-size:2.5em;   
+           background-color:lightgrey; border-radius:10px; 
+           padding-left:5px; min-width: 100px;  
+           padding-right:5px; margin:10px; 
+           display:inline-block; text-align:center; 
+           line-height:120px;}
 </style>
 <script src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
 <script src="http://code.jquery.com/ui/1.8.21/jquery-ui.min.js"></script>
@@ -10,8 +17,8 @@ var currentno = 100;
 
 function detach() {
    var iden = "name4";
- //  $('[id='+iden+']').detach();
-   $('#'+iden).detach();
+   $('li:first').detach();
+ //  $('#'+iden).detach();
    
 }
 
@@ -54,6 +61,13 @@ $(function() {
 </head>
 <body>
 <ul id="namelist">
+<li id="name1" class="unseatedPlayer">Einar</li>
+<li id="name2" class="unseatedPlayer">Guddie</li>
+<li id="name3" class="unseatedPlayer">Philippe</li>
+<li id="name4" class="unseatedPlayer">Ib</li>
+<li id="name5" class="unseatedPlayer">Bente</li>
+<li id="name6" class="unseatedPlayer">longerme6</li>
+<li id="name7" class="unseatedPlayer">longername7</li>
 <li id="name1" class="unseatedPlayer">Einar</li>
 <li id="name2" class="unseatedPlayer">Guddie</li>
 <li id="name3" class="unseatedPlayer">Philippe</li>
