@@ -123,7 +123,7 @@ function touchMove(event) {
 
 function dropTouch(from, toParent, toChild) {
   toChild.innerHTML = from.innerHTML;
-  toParent.style.backgroundColor = droppedColor;
+  toParent.style.backgroundColor = droppedBgColor;
   $('#'+from.id).detach();
 //  from.style.backgroundColor="white";
   dropName = "";
@@ -162,6 +162,7 @@ function touchSeatEnd(event) {
     event.preventDefault();
     var touch = event.changedTouches[0];
     var el = document.elementFromPoint(touch.clientX, touch.clientY);
+    var dragToPair = getSeatPair(el);
     setStatus(dropElements);
     addStatus(dropElements.length);
     if (el.id == "listadder" && dropElements.length !=0) {
@@ -175,13 +176,12 @@ function touchSeatEnd(event) {
         currentNo += currentNo;
         dropElements = [];
      } 
-     else {
-        var seatPair = getSeatPair(el);
-        if (var.length == 2) {
-        
+     else if (dragToPair.length == 2 && 
+              dragToPair[1].innerHTML.trim() == "") {
+        alert("now we move in seat");
         }
      else {
-        dropElements.style.backgroundColor = droppedBgColor;
+        dropElements[0].style.backgroundColor = droppedBgColor;
         dropElements = [];
      }
 }
