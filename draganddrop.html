@@ -136,21 +136,28 @@ function touchEnd(event) {
     var el = document.elementFromPoint(touch.clientX, touch.clientY);
     setStatus("fandt element" + el.id);
     var returnValue;
-    if (el.className == "seat") {
-      var children = $("#"+el.id).find("div");
-      addStatus("nu her i seat" + children[0].className);
-      returnValue = [el, children[0]];
-    }
-    else if (el.className =="seatdata") {
-      addStatus("nu her");
-      returnValue = [el.parentNode, el];
-    }
-    else {
-    returnValue = "";
-    }
-    addStatus("returnValue " + returnValue);      		  
-    if (returnValue != "") {
-      dropTouch(document.getElementById(dropName), returnValue[0], returnValue[1]);
+    var dragToPair = getSeatPair(el);
+//    if (el.className == "seat") {
+//      var children = $("#"+el.id).find("div");
+//      addStatus("nu her i seat" + children[0].className);
+//      returnValue = [el, children[0]];
+//    }
+//    else if (el.className =="seatdata") {
+//      addStatus("nu her");
+//      returnValue = [el.parentNode, el];
+//    }
+//    else {
+//    returnValue = "";
+//    }
+//    addStatus("returnValue " + returnValue);      		  
+  
+      if (dragToPair.length == 2 && 
+              dragToPair[1].innerHTML.trim() == "") {
+         var from =  document.getElementById(dropName);
+         dragToPair[1].innerHTML = from.innerHTML;
+         dragToPair[0].style.backgroundColor = droppedBgColor;
+         $('#'+from.id).detach();
+         dropName = "";
     } 
     else {
       document.getElementById(dropName).style.backgroundColor = droppedBgColor;
@@ -172,13 +179,22 @@ function touchSeatEnd(event) {
         addStatus('id="name' + currentNo + '" class="unseatedPlayer">' + name);
         $('#namelist').prepend(
           '<li id="name'+currentNo+'" class="unseatedPlayer">'+ name+'</li>');
+      $("#name"+currentNo).on({
+      'touchstart': function(ev) {var e = ev.originalEvent; touchStart(e);},
+      'touchmove': function(ev) {var e = ev.originalEvent; touchMove(e);},
+      'touchend': function(ev){var e = ev.originalEvent; touchEnd(e); }
+     });
         dropElements[1].innerHTML = "";
         currentNo += currentNo;
         dropElements = [];
      } 
      else if (dragToPair.length == 2 && 
               dragToPair[1].innerHTML.trim() == "") {
-        alert("now we move in seat");
+         dragToPair[0].style.backgroundColor = droppedBgColor; 
+         dragToPair[1].innerHTML = dropElements[1].innerHTML;
+         dropElements[0].style.backgroundColor = openColor;
+         dropElements[1].innerHTML = "";
+         dropElements = [];
         }
      else {
         dropElements[0].style.backgroundColor = droppedBgColor;
