@@ -18,7 +18,7 @@ function detach() {
 function attach(name) {
    var person = prompt("Skriv navnet", "")
    if (person != null) {
-     $('#namelist').prepend('<li id="name' + currentno + '" class="unseatedPlayer">' + person + '</li>');
+     $('#namelist').prepend('< li id="name' + currentno + '" class="unseatedPlayer">' + person + '< / li>');
      $('li').css('color','red');
 }
 }

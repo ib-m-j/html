@@ -12,8 +12,10 @@
            border:solid black 1px; padding-left:10px; padding-right:10px;}
 .unseatedPlayer {height: 120px; font-size:2.5em;   
            background-color:lightgrey; border-radius:10px; 
-           padding-left:5px; padding-top:20px; min-width: 100px;  padding-right:5px; margin:10px; 
-           display:inline-block; text-align:center;}
+           padding-left:5px; min-width: 100px;  
+           padding-right:5px; margin:10px; 
+           display:inline-block; text-align:center; 
+           line-height:120px;}
 .seat {border:solid black 1px; border-radius:10px; width: 
        calc((100% - 9em;) / 2); font-size:1.5em; 
         block-sizing:border-box; padding-left: 5px; padding-top:5px;
@@ -32,40 +34,86 @@
 <script src="http://code.jquery.com/ui/1.8.21/jquery-ui.min.js"></script>
 <script>
 
-var dropBgColor = "#cccccc";
+var droppedBgColor = "#cccccc";
 var dropzoneBgColor = "#555555";
+var openColor = "white"
 var dropName = "";
+var dropElements = [];
+var currentNo = 100;
+
+$(document).ready(function(){
+  setStatus("document ready");
+  $(".unseatedPlayer").on({
+      'touchstart': function(ev) {var e = ev.originalEvent; touchStart(e);},
+      'touchmove': function(ev) {var e = ev.originalEvent; touchMove(e);},
+      'touchend': function(ev){var e = ev.originalEvent; touchEnd(e); }
+     });
+
+  $(".seat").on({
+      'touchstart': function(ev) {var e = ev.originalEvent; touchSeatStart(e);},
+//reusing seatMove
+      'touchmove': function(ev) {var e = ev.originalEvent; touchMove(e);}, 
+      'touchend': function(ev){var e = ev.originalEvent; touchSeatEnd(e); }
+     });
+
+  $(".dropzone").on(
+      'touchstart', function(ev) {var e = ev.originalEvent; setToBottom(e);});
+
+
+});
+
+// helper functions 1111111111111111111111111111111111111111111
+function setStatus(x) {
+document.getElementById("status").innerHTML= x;
+}
+
+function addStatus(x) {
+document.getElementById("status").innerHTML= document.getElementById("status").innerHTML + "<br>" + x;
+}
+
+function getSeatPair(el) {
+    var parent;
+    var child;
+    if (el.className == "seat") {
+      parent = el;
+      child = $("#"+el.id).find("div")[0];
+    }
+    else if (el.className =="seatdata") {
+      child = el; 
+      parent = el.parentNode;
+    }
+    return ([parent, child]);
+}
+
+
+// event handling 2222222222222222222222222222222222222222222
 
 function touchStart(event) {
   var touch = event.changedTouches[0];
-  event.preventDefault();
-  dropName = touch.target.id;
-  setStatus("Starting with touch" + dropName);
-  touch.target.style.backgroundColor = "white";
+  if (touch.target.id != "listadder") {
+      event.preventDefault();
+      dropName = touch.target.id;
+      setStatus("Starting with touch" + dropName);
+      touch.target.style.backgroundColor = openColor;
+  }
 }
 
-function setToBottom(ev) {
-  event.preventDefault();
+function touchSeatStart(event) {
   var touch = event.changedTouches[0];
-  var oldTexts = new Array;
-  var newTexts = new Array;
-  var ids = ["Nord", "Øst", "Syd", "Vest"];
-  
-  var bottomId = ids.indexOf(document.getElementById(touch.target.id));
-
-  for (i = 0; i < ids.length; i++) {  
-     oldTexts[i] = document.getElementById([ids[i]]).innerHTML;
-  };
-
-  for (i = 0; i < ids.length; i++) {
-     newTexts[(i + bottomId) % 4] =  oldTexts[i];
-  };
-
-  for (i = 0; i < ids.length; i++) {  
-     document.getElementById([ids[i]]).innerHTML = newTexts[i];
-  };
+  var parent;
+  var child;
+  parent = getSeatPair(touch.target)[0];
+  child = getSeatPair(touch.target)[1];
+  setStatus("Seat start");
+  addStatus(child.innerHTML.trim().length);
+  addStatus(dropElements.length);
+  if (child.innerHTML.trim().length > 0) {
+  addStatus("starting drag");
+      event.preventDefault();
+      dropElements = [parent,child];
+      parent.style.backgroundColor = openColor;
 }
-
+}
 function touchMove(event) {
   event.preventDefault();
 }
@@ -102,31 +150,57 @@ function touchEnd(event) {
       dropTouch(document.getElementById(dropName), returnValue[0], returnValue[1]);
     } 
     else {
-      document.getElementById(dropName).style.backgroundColor = dropBgColor;
+      document.getElementById(dropName).style.backgroundColor = droppedBgColor;
       dropName = "";
     }
 }
 
-function setStatus(x) {
-document.getElementById("status").innerHTML= x;
+function touchSeatEnd(event) {
+    event.preventDefault();
+    var touch = event.changedTouches[0];
+    var el = document.elementFromPoint(touch.clientX, touch.clientY);
+    setStatus(dropElements);
+    addStatus(dropElements.length);
+    if (el.id == "listadder" && dropElements.length !=0) {
+        setStatus("starting insert");
+        addStatus(dropElements[1].innerHTML);
+        var name = dropElements[1].innerHTML;
+        addStatus('id="name' + currentNo + '" class="unseatedPlayer">' + name);
+        $('#namelist').prepend(
+          '<li id="name'+currentNo+'" class="unseatedPlayer">'+ name+'</li>');
+        dropElements[1].innerHTML = "";
+        currentNo += currentNo;
+        dropElements = [];
+     } 
+     else {
+      dropElements.style.backgroundColor = droppedBgColor;
+      dropElements = [];
+     }
 }
 
-function addStatus(x) {
-document.getElementById("status").innerHTML= document.getElementById("status").innerHTML + "<br>" + x;
+
+function setToBottom(ev) {
+  event.preventDefault();
+  var touch = event.changedTouches[0];
+  var oldTexts = new Array;
+  var newTexts = new Array;
+  var ids = ["Nord", "Øst", "Syd", "Vest"];
+  
+  var bottomId = ids.indexOf(document.getElementById(touch.target.id));
+
+  for (i = 0; i < ids.length; i++) {  
+     oldTexts[i] = document.getElementById([ids[i]]).innerHTML;
+  };
+
+  for (i = 0; i < ids.length; i++) {
+     newTexts[(i + bottomId) % 4] =  oldTexts[i];
+  };
+
+  for (i = 0; i < ids.length; i++) {  
+     document.getElementById([ids[i]]).innerHTML = newTexts[i];
+  };
 }
 
-
-$(document).ready(function(){
-  setStatus("document ready");
-  $(".unseatedPlayer").on({
-      'touchstart': function(ev) {var e = ev.originalEvent; touchStart(e);},
-      'touchmove': function(ev) {var e = ev.originalEvent; touchMove(e);},
-      'touchend': function(ev){var e = ev.originalEvent; touchEnd(e); }
-     });
-
-  $(".dropzone").on(
-      'touchstart', function(ev) {var e = ev.originalEvent; setToBottom(e);});
-});
 
 
 function setdirs(target) {
@@ -151,12 +225,13 @@ document.getElementById("plads"+((start+i)%4)).innerHTML = dirs[i] + document.ge
 <li id="name5" class="unseatedPlayer">Bente</li>
 <li id="name6" class="unseatedPlayer">longerme6</li>
 <li id="name7" class="unseatedPlayer">very long longername7</li>
-<li id="listadder" class="unseatedPlayer">+</li>
+<li id="listadder" class="unseatedPlayer" 
+     style="font-size:2em; font-weight:bold;">+++</li>
 </ul>
 
 
 <div id="plads1" class="seat" style="margin:0 auto;">Nord
-  <div class="seatdata" >plads1</div>
+  <div class="seatdata" ></div>
 </div>
 
 	    
@@ -164,8 +239,7 @@ document.getElementById("plads"+((start+i)%4)).innerHTML = dirs[i] + document.ge
    <div style="display:table-row; height:7em;">
      <div id="plads4" class="seat" 
 	  style="display:table-cell;">Vest
-       <div class="seatdata">plads2
-       </div>
+       <div class="seatdata"></div>
      </div>
      
      <div id="space" 
@@ -175,14 +249,14 @@ document.getElementById("plads"+((start+i)%4)).innerHTML = dirs[i] + document.ge
 
      <div  id="plads3" class="seat" 
 	   style="display:table-cell; ">Øst
-       <div class="seatdata">plads3</div>
+       <div class="seatdata"></div>
      </div>
 
    </div>
 </div>
 
 <div id="plads2" class="seat" style="margin: 5px auto;">Syd
-  <div class="seatdata">plads2</div>
+  <div class="seatdata"></div>
 </div>
 
 
