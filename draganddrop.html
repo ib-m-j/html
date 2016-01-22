@@ -15,10 +15,10 @@
            padding-left:5px; min-width: 100px;  padding-right:5px; margin:10px; 
            display:inline-block; text-align:center;}
 .seat {border:solid black 1px; border-radius:10px; width: 
-       calc((100% - 9em;) / 2);  
+       calc((100% - 9em;) / 2); font-size:1.5em; 
         block-sizing:border-box; padding-left: 5px; padding-top:5px;
-        text-overflow:clip; overflow:hidden; height:7em;}
- .seatdata {font-size:3em; margin: 0.1em auto 0.1em; text-align:center; 
+        text-overflow:clip; overflow:hidden; height:5em;}
+ .seatdata {font-size:2.2em; margin: 0.2em auto o.2em; text-align:center; 
             white-space:nowrap; text-overflow:clip; overflow:hidden;}
     .no-overflow {
         display:inline-block;
@@ -150,7 +150,7 @@ document.getElementById("plads"+((start+i)%4)).innerHTML = dirs[i] + document.ge
 <li id="name4" class="unseatedPlayer">Ib</li>
 <li id="name5" class="unseatedPlayer">Bente</li>
 <li id="name6" class="unseatedPlayer">longerme6</li>
-<li id="name7" class="unseatedPlayer">longername7</li>
+<li id="name7" class="unseatedPlayer">very long longername7</li>
 </ul>
 
 </--.seat {border:solid black 1px; width: calc((100% - 9em;) / 2);  
@@ -162,15 +162,15 @@ document.getElementById("plads"+((start+i)%4)).innerHTML = dirs[i] + document.ge
 
 
 <div id="plads1" class="seat" style="margin:0 auto;">Nord
-  <div class="seatdata" >llllllllllllllllplalækasdfds1</div>
+  <div class="seatdata" >plads1</div>
 </div>
 
 	    
 <div style="display:table; padding: 8px; width:100%; table-layout:fixed;">
-   <div style="display:table-row; height:7em; ">
+   <div style="display:table-row; height:7em;">
      <div id="plads4" class="seat" 
 	  style="display:table-cell;">Vest
-       <div class="seatdata">læsdlfj fkj kjl jlj ljlkj
+       <div class="seatdata">plads2
        </div>
      </div>
      
@@ -181,14 +181,14 @@ document.getElementById("plads"+((start+i)%4)).innerHTML = dirs[i] + document.ge
 
      <div  id="plads3" class="seat" 
 	   style="display:table-cell; ">Øst
-       <div class="seatdata"> ss</div>
+       <div class="seatdata">plads3</div>
      </div>
 
    </div>
 </div>
 
-<div id="plads2" class="seat" style="margin: 0px auto;">Syd
-  <div class="seatdata">ss</div>
+<div id="plads2" class="seat" style="margin: 5px auto;">Syd
+  <div class="seatdata">plads2</div>
 </div>
 
 
