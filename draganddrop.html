@@ -3,42 +3,29 @@
 <html>
 <head>
 <style>
-#table {width:100%; padding:2px; font-size:3em; border-spacing:10px;}
 #other {position:absolute; top:300px; width:20px;height:20px;padding:10px;border:1px solid #aaaaaa;}
 #namelist {list-style-type:none; height:275px; padding:10px; 
            margin:0px; white-space:nowrap; overflow:hidden; 
-           overflow-x:auto; border:solid red 2px;}
-#table div {background-color:lightgrey; padding:3px;}
-#table td { margin:5px;}
-.dropzone {height:150px; background-color:"#555555"; text-align:center; 
-           border:solid black 1px; padding-left:10px; padding-right:10px;}
+           overflow-x:auto; border:solid darkgreen  2px;}
 .unseatedPlayer {height: 120px; font-size:2.5em;   
-           background-color:lightgrey; border-radius:10px; 
+           background-color:#77ff77; border-radius:10px; 
            padding-left:5px; min-width: 100px;  
            padding-right:5px; margin:10px; 
            display:inline-block; text-align:center; 
            line-height:120px;}
-.seat {border:solid black 1px; border-radius:10px; width: 
-       calc((100% - 9em;) / 2); font-size:1.5em; 
+.seat {border:solid 2px; border-color:darkgreen; border-radius:10px; width: 
+       calc((100% - 9em;) / 2); font-size:1.5em; background-color:#ccffcc;
         block-sizing:border-box; padding-left: 5px; padding-top:5px;
         text-overflow:clip; overflow:hidden; height:5em;}
- .seatdata {font-size:2.2em; margin: 0.2em auto o.2em; text-align:center; 
+.seatdata {font-size:2.2em; margin: 0.2em auto o.2em; text-align:center; 
             white-space:nowrap; text-overflow:clip; overflow:hidden;}
-    .no-overflow {
-        display:inline-block;
-        white-space:nowrap;
-        position:relative; /* must be relative */
-        width:100%; /* fit to table cell width */
-        margin-right:-1000px; /* technically this is a less than zero width object */
-        overflow:hidden;}
 </style>
 <script src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
 <script src="http://code.jquery.com/ui/1.8.21/jquery-ui.min.js"></script>
 <script>
 
-var droppedBgColor = "#cccccc";
-var dropzoneBgColor = "#555555";
-var openColor = "white"
+var droppedBgColor = "#77ff77";
+var openColor = "#ccffcc";
 var dropName = "";
 var dropElements = [];
 var currentNo = 100;
@@ -57,10 +44,6 @@ $(document).ready(function(){
       'touchmove': function(ev) {var e = ev.originalEvent; touchMove(e);}, 
       'touchend': function(ev){var e = ev.originalEvent; touchSeatEnd(e); }
      });
-
-  $(".dropzone").on(
-      'touchstart', function(ev) {var e = ev.originalEvent; setToBottom(e);});
-
 
 });
 
@@ -136,7 +119,6 @@ function touchEnd(event) {
     var touch = event.changedTouches[0];
     setStatus("starting tounch end ");
     var el = document.elementFromPoint(touch.clientX, touch.clientY);
-    setStatus("fandt element" + el.id);
     var returnValue;
     var dragToPair = getSeatPair(el);
 //    if (el.className == "seat") {
@@ -153,8 +135,11 @@ function touchEnd(event) {
 //    }
 //    addStatus("returnValue " + returnValue);      		  
   
-      if (dragToPair.length == 2 && 
-              dragToPair[1].innerHTML.trim() == "") {
+   addStatus("target is" + touch.target.id);
+      if (touch.target.id != "listadder" &&
+          dragToPair.length == 2 && 
+          dragToPair[1].innerHTML.trim() == "") {
+    addStatus("fandt element" + el.id);
          var from =  document.getElementById(dropName);
          dragToPair[1].innerHTML = from.innerHTML;
          dragToPair[0].style.backgroundColor = droppedBgColor;
