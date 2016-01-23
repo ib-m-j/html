@@ -2,7 +2,8 @@
 <html>
 <head>
 <style>
-#namelist {list-style-type:none; padding:10px; margin:10px; white-space:nowrap; height:300px; width:100%; overflow-hidden; overflow-x:auto;}
+#namelist {list-style-type:none; padding:10px; margin:10px; white-space:nowrap; height:300px; width:100%; overflow-hidden; overflow-x:auto; position:absolute;
+top:200px; left:0px; }
 .unseatedPlayer {height: 120px; font-size:2.5em;   
            background-color:lightgrey; border-radius:10px; 
            padding-left:5px; min-width: 100px;  
@@ -10,8 +11,13 @@
            display:inline-block; text-align:center; 
            line-height:120px;}
 </style>
-<script src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
-<script src="http://code.jquery.com/ui/1.8.21/jquery-ui.min.js"></script>
+<script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+<script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<link rel="stylesheet" href="jquery-ui.min.css">
+<link rel="stylesheet" href="theme.css">
+
+
+
 <script>
 var currentno = 100;
 
@@ -25,43 +31,61 @@ function detach() {
 function attach(name) {
    var person = prompt("Skriv navnet", "")
    if (person != null) {
-     $('#namelist').prepend('< li id="name' + currentno + '" class="unseatedPlayer">' + person + '< / li>');
+     $('#namelist').prepend('<li id="name' + currentno + '" class="unseatedPlayer">' + person + '</ li>');
      $('li').css('color','red');
 }
 }
 
 function input() {
 //  $("#newPerson").css("display", "block");
-  document.getElementById("newPerson").showModal();
- $("#newPerson").dialog({position : { at:"left 100", of:"#inputdiv"},
-                         dialogClass: "no-close"});
+//  document.getElementById("newPerson").showModal();
+// $("#newPerson").dialog({position : { at:"left 100", of:"#inputdiv"},
+//                         dialogClass: "no-close"});
 }
 
-//$(document).ready(function(){
+$(document).ready(function(){
 //$("#newPerson").dialog({position: [200,200]});
-// $("#newPerson").dialog({position : {my: "left top", at:"left bottom", of:"#in//putdiv"}});
-//});
-
-function getNewPerson() {
-  var res = document.getElementById("newPerson").value;
-  alert(res);
-}
-
-function submitting() {
-alert("submit");
-}
-
-$(function() {
-  $("#newperson").dialog({position : { at:"left 100", of:"#inputdiv"},
-                         dialogClass: "no-close",
-                          });
+// $("#newPerson").dialog({position : {my: "left top", at:"left bottom", 
+//                         of:"#in//putdiv"}});
 });
+
+function opennow() {
+$("#newPerson").dialog("open");
+    };
+
+
+
+
+ $(function() {
+    var dialog, form;
+
+    function submitting() {
+    var res = $("#name").val();
+    dialog.dialog("close");
+    };
+
+    dialog = $( "#newPerson" ).dialog({
+      autoOpen: false,
+      show: {effect: "blind", duration: 1000 },
+      position : {my: "middle bottom", at:"left bottom", 
+                         of:"#opener"},
+      dialogClass:"no-close",
+      modal:true,
+      buttons: {
+          "Indsæt i listen" : submitting,
+          Cancel: function() { dialog.dialog("close");}
+      }
+    });
+ 
+});
+
+
 
 </script>
 </head>
 <body>
-<ul id="namelist">
-<li id="name1" class="unseatedPlayer">Einar</li>
+<ul id="namelist" style="vertical-align:bottom;">
+<li id="name1" class="unseatedPlayer" style="vertical-align:bottom;">Einar</li>
 <li id="name2" class="unseatedPlayer">Guddie</li>
 <li id="name3" class="unseatedPlayer">Philippe</li>
 <li id="name4" class="unseatedPlayer">Ib</li>
@@ -75,16 +99,23 @@ $(function() {
 <li id="name5" class="unseatedPlayer">Bente</li>
 <li id="name6" class="unseatedPlayer">longerme6</li>
 <li id="name7" class="unseatedPlayer">longername7</li>
+<div id="listmanager" class="unseatedPlayer"
+     style="position:absolute; bottom:0px; left:0px;" >+++</div>
 </ul>
+
+<div style="position:absolute; top:550px;">
 <button type="button" onclick="detach()" > detach </button>
 <button type="button" onclick="attach()" > attach </button>
-<button id="inputdiv" type="button" onclick="input()" > input </button>
-<br>
+<button type="button" id="opener" onclick="opennow()"> input </button>
 
-<div id="newPerson" >Skriv navnet<br>
-<input type="text"></input>
-<br>
-<input type="submit" onclick="submitting()" value="OK"></input>
+<div id="newPerson" title="Skriv navnet">Navnet vil blive lagt forrest i listen
+<form>
+  <fieldset>
+     <label for="name"> Navn</label>
+     <input type="text" name="name" id="name" value=""
+           class="text ui-widget-content ui-corner-all">
+   </fieldset>
+</form>
 </div>
 
 
@@ -98,6 +129,7 @@ $(function() {
    <div style="text-align:center; border: solid black 1px; display:table-cell; width:calc((100% - 420px;) / 2)" > kjhjkh</div>
    <div style="text-align:center; border: solid black 1px; display:table-cell; width:100px;"> kjhjkh</div>
  </div>
+</div>
 </div>
 </body>
 </html>
