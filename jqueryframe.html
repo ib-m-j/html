@@ -13,8 +13,8 @@ top:200px; left:0px; }
 </style>
 <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
 <script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
-<link rel="stylesheet" href="jquery-ui.min.css">
-<link rel="stylesheet" href="theme.css">
+//<link rel="stylesheet" href="jquery-ui.min.css">
+//<link rel="stylesheet" href="theme.css">
 
 
 
@@ -36,18 +36,6 @@ function attach(name) {
 }
 }
 
-function input() {
-//  $("#newPerson").css("display", "block");
-//  document.getElementById("newPerson").showModal();
-// $("#newPerson").dialog({position : { at:"left 100", of:"#inputdiv"},
-//                         dialogClass: "no-close"});
-}
-
-$(document).ready(function(){
-//$("#newPerson").dialog({position: [200,200]});
-// $("#newPerson").dialog({position : {my: "left top", at:"left bottom", 
-//                         of:"#in//putdiv"}});
-});
 
 function opennow() {
 $("#newPerson").dialog("open");
@@ -55,14 +43,15 @@ $("#newPerson").dialog("open");
 
 
 
-
- $(function() {
+ $(document).ready(function() {
     var dialog, form;
 
     function submitting() {
-    var res = $("#name").val();
-    dialog.dialog("close");
+        var res = $("#name").val();
+        alert("submitting");
+        dialog.dialog("close");
     };
+
 
     dialog = $( "#newPerson" ).dialog({
       autoOpen: false,
@@ -84,8 +73,8 @@ $("#newPerson").dialog("open");
 </script>
 </head>
 <body>
-<ul id="namelist" style="vertical-align:bottom;">
-<li id="name1" class="unseatedPlayer" style="vertical-align:bottom;">Einar</li>
+<ul id="namelist" >
+<li id="name1" class="unseatedPlayer">Einar</li>
 <li id="name2" class="unseatedPlayer">Guddie</li>
 <li id="name3" class="unseatedPlayer">Philippe</li>
 <li id="name4" class="unseatedPlayer">Ib</li>
@@ -109,13 +98,9 @@ $("#newPerson").dialog("open");
 <button type="button" id="opener" onclick="opennow()"> input </button>
 
 <div id="newPerson" title="Skriv navnet">Navnet vil blive lagt forrest i listen
-<form>
-  <fieldset>
      <label for="name"> Navn</label>
      <input type="text" name="name" id="name" value=""
            class="text ui-widget-content ui-corner-all">
-   </fieldset>
-</form>
 </div>
 
 

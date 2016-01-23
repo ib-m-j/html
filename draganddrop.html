@@ -1,7 +1,7 @@
-
 <!DOCTYPE HTML>
 <html>
 <head>
+
 <style>
 #other {position:absolute; top:300px; width:20px;height:20px;padding:10px;border:1px solid #aaaaaa;}
 #namelist {list-style-type:none; height:275px; padding:10px; 
@@ -20,8 +20,9 @@
 .seatdata {font-size:2.2em; margin: 0.2em auto o.2em; text-align:center; 
             white-space:nowrap; text-overflow:clip; overflow:hidden;}
 </style>
-<script src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
-<script src="http://code.jquery.com/ui/1.8.21/jquery-ui.min.js"></script>
+<script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+<script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<link rel="stylesheet" href="jquery-ui.min.css">
 <script>
 
 var droppedBgColor = "#77ff77";
@@ -45,7 +46,35 @@ $(document).ready(function(){
       'touchend': function(ev){var e = ev.originalEvent; touchSeatEnd(e); }
      });
 
+
+   $("#listadder").on({'touchstart' : function(ev) {addPerson();}});
+
+
+    var dialog;
+
+    function submitting() {
+        var res = $("#name").val();
+        dialog.dialog("close");
+        document.body.zoom.out();
+    };
+
+
+    dialog = $( "#newPerson" ).dialog({
+      autoOpen: false,
+      position : {my: "left top", at:"left bottom", 
+                         of:"#listadder"},
+      dialogClass:"no-close",
+      modal:true,
+      width:550,
+      buttons: {
+          "Indsæt i listen" : submitting,
+          "Retur": function() { dialog.dialog("close");}
+      }
+    });
+ 
 });
+
+
 
 // helper functions 1111111111111111111111111111111111111111111
 function setStatus(x) {
@@ -75,6 +104,14 @@ function getSeatPair(el) {
 
 
 // event handling 2222222222222222222222222222222222222222222
+function addPerson() {
+    event.preventDefault();
+    $("#newPerson").dialog("open");
+    };
+
+function submitPerson() {
+  alert("submitting");
+}
 
 function touchStart(event) {
   var touch = event.changedTouches[0];
@@ -110,7 +147,6 @@ function dropTouch(from, toParent, toChild) {
   toChild.innerHTML = from.innerHTML;
   toParent.style.backgroundColor = droppedBgColor;
   $('#'+from.id).detach();
-//  from.style.backgroundColor="white";
   dropName = "";
 }
 
@@ -121,19 +157,6 @@ function touchEnd(event) {
     var el = document.elementFromPoint(touch.clientX, touch.clientY);
     var returnValue;
     var dragToPair = getSeatPair(el);
-//    if (el.className == "seat") {
-//      var children = $("#"+el.id).find("div");
-//      addStatus("nu her i seat" + children[0].className);
-//      returnValue = [el, children[0]];
-//    }
-//    else if (el.className =="seatdata") {
-//      addStatus("nu her");
-//      returnValue = [el.parentNode, el];
-//    }
-//    else {
-//    returnValue = "";
-//    }
-//    addStatus("returnValue " + returnValue);      		  
   
    addStatus("target is" + touch.target.id);
       if (touch.target.id != "listadder" &&
@@ -226,7 +249,9 @@ document.getElementById("plads"+((start+i)%4)).innerHTML = dirs[i] + document.ge
 }
 }
 </script>
-</head>
+
+</head >
+
 <body >
 <p style="font-size:2em;">
 Træk først navne hen på pladserne. Ved fejl træk tilbage til listen. Tilføj navne - klik på '+++'.
@@ -239,10 +264,11 @@ Træk først navne hen på pladserne. Ved fejl træk tilbage til listen. Tilføj navn
 <li id="name5" class="unseatedPlayer">Bente</li>
 <li id="name6" class="unseatedPlayer">longerme6</li>
 <li id="name7" class="unseatedPlayer">very long longername7</li>
-<div id="listadder" class="unseatedPlayer"
+<div id="listadder" class="unseatedPlayer" onclick="addPerson()"
      style="font-weight:bold; position:absolute; 
-            bottom:8px; left:12px;" >+++</div>
+            bottom:8px; left:12px;">+++</div>
 </ul>
+
 </div>
 
 
@@ -284,5 +310,18 @@ height:200px; background-color:lightgreen; display:inline-block;" >
 <div id="status1" style="font-size:2em; width:300px; height:200px; background-color:lightgreen; display:inline-block; float:right;" >
 </div>
 </div>
+
+
+<div id="newPerson"  title="" style="font-size:2em;">Navnet vil blive lagt forrest i listen
+     <input type="text" name="name" id="name" value=""
+           class="text ui-widget-content ui-corner-all"
+	    style="height:50px; font-size:1.5em; width:100%">
+     <button type ="button" style="font-size:1.5em;" 
+             onclick="submitPerson()">OK</Button>
+</div>
+
+
+
+
 </body>
 </html>
