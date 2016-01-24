@@ -94,17 +94,26 @@ document.getElementById("status").innerHTML= document.getElementById("status").i
 function getSeatPair(el) {
     var parent;
     var child;
-    if (el.className == "seat") {
-      parent = el;
-      child = $("#"+el.id).find("div")[0];
+    parent = $(el).closest('.seat');
+    if (parent.length == 1) {
+        setStatus("setting parent child");
+        child = $(parent).find("div")[0];
+        return([parent, child])
     }
-    else if (el.className =="seatdata") {
-      child = el; 
-      parent = el.parentNode;
-    }
-    else {
-       return [];
-    } 
+    setStatus("foundno seat");
+    return([]);
+
+//    if (el.className == "seat") {
+//      parent = el;
+//      child = $("#"+el.id).find("div")[0];
+//    }
+//    else if (el.className =="seatdata") {
+//      child = el; 
+//      parent = el.parentNode;
+//    }
+//    else {
+//       return [];
+//    } 
     return ([parent, child]);
 }
 
@@ -155,19 +164,22 @@ function touchStart(event) {
 
 function touchSeatStart(event) {
   var touch = event.changedTouches[0];
-  var parent;
+  var parentAnChild;
   var child;
-  parent = getSeatPair(touch.target)[0];
-  child = getSeatPair(touch.target)[1];
-  setStatus("Seat start");
-  addStatus(child.innerHTML.trim().length);
-  addStatus(dropElements.length);
-  if (child.innerHTML.trim().length > 0) {
-  addStatus("starting drag");
-      event.preventDefault();
-      dropElements = [parent,child];
-      parent.style.backgroundColor = openColor;
-}
+
+  setStatus("eseatstartevent" + touch.target.className);  
+  parentAndChild = getSeatPair(touch.target);
+  addStatus("seat start with "+parentAndChild[0].attr('id'));
+//  [parent, child] = getSeatPair(touch.target)[0];
+//  child = getSeatPair(touch.target)[1];
+//  addStatus(parentAndChild[1].innerHTML.trim());
+//  addStatus(dropElements.length);
+  event.preventDefault();
+  if (parentAndChild[1].innerHTML.trim().length > 0) {
+     addStatus("starting drag");
+     dropElements = parentAndChild;
+     parentAndChild[0].css('background-color', openColor);
+  }
 }
 
 function touchMobileStart(event) {
@@ -190,19 +202,18 @@ function dropTouch(from, toParent, toChild) {
 function touchEnd(event) {
     event.preventDefault();
     var touch = event.changedTouches[0];
-    setStatus("starting tounch end ");
     var el = document.elementFromPoint(touch.clientX, touch.clientY);
     var returnValue;
     var dragToPair = getSeatPair(el);
   
-   addStatus("target is" + touch.target.id);
+   setStatus("target is" + touch.target.id);
       if (touch.target.id != "listadder" &&
           dragToPair.length == 2 && 
           dragToPair[1].innerHTML.trim() == "") {
     addStatus("fandt element" + el.id);
          var from =  document.getElementById(dropName);
          dragToPair[1].innerHTML = from.innerHTML;
-         dragToPair[0].style.backgroundColor = droppedBgColor;
+         dragToPair[0].css('background-color', droppedBgColor);
          $('#'+from.id).detach();
          dropName = "";
          if (allSeatsFilled()) {
@@ -231,7 +242,7 @@ function touchSeatEnd(event) {
     setStatus(dropElements);
     addStatus(dropElements.length);
     if (el.id == "namelist" && dropElements.length !=0) {
-        setStatus("starting insert");
+        setStatus("starting insert in list");
         addStatus(dropElements[1].innerHTML);
         var name = dropElements[1].innerHTML;
         addStatus('id="name' + currentNo + '" class="unseatedPlayer">' + name);
@@ -243,21 +254,27 @@ function touchSeatEnd(event) {
       'touchend': function(ev){var e = ev.originalEvent; touchEnd(e); }
      });
         dropElements[1].innerHTML = "";
+        dropElements[0].css('background-color', openColor);
         currentNo += currentNo;
-        dropElements = [];
      } 
-     else if (dragToPair.length == 2 && 
-              dragToPair[1].innerHTML.trim() == "") {
-         dragToPair[0].style.backgroundColor = droppedBgColor; 
+     else if (dragToPair.length == 2  && 
+              dropElements.length !=0 ) {
+         targetString = dragToPair[1].innerHTML.trim();
          dragToPair[1].innerHTML = dropElements[1].innerHTML;
-         dropElements[0].style.backgroundColor = openColor;
-         dropElements[1].innerHTML = "";
-         dropElements = [];
-        }
-     else {
-        dropElements[0].style.backgroundColor = droppedBgColor;
-        dropElements = [];
+         dropElements[1].innerHTML = targetString;
+         dragToPair[0].css('background-color', droppedBgColor); 
+         if (targetString.length == 0) {
+            dropElements[0].css('background-color', openColor);
+         }
+         else {
+            dropElements[0].css('background-color', droppedBgColor);
+         }
      }
+     else {
+        dropElements[0].css('background-color', droppedBgColor);
+     }
+
+     dropElements = [];
 }
 
 
@@ -399,8 +416,7 @@ Træk først navne hen på pladserne. Ved fejl træk tilbage til listen. Tilføj navn
 </div>
 
 
-<div id="mobile" style="width:150px; height:150px; display:none; 
-      background-color:lightgrey;"><img src="mobile53.png" alt="TTTTTTTTT"></img></div>
+<div id="mobile"><img src="mobile53.svg" alt="TTTTTTTTT"></img></div>
 
 <div id="status" style="font-size:2em; width:300px; 
 height:200px; background-color:lightgreen; display:inline-block;" >
