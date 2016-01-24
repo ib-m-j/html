@@ -34,9 +34,9 @@ var openColor = "#ccffcc";
 var dropName = "";
 var dropElements = [];
 var currentNo = 100;
+var runs = 0;
 
 $(document).ready(function(){
-  setStatus("document ready");
   $(".unseatedPlayer").on({
       'touchstart': function(ev) {var e = ev.originalEvent; touchStart(e);},
       'touchmove': function(ev) {var e = ev.originalEvent; touchMove(e);},
@@ -78,11 +78,21 @@ $(document).ready(function(){
 //      width:550,
 //    });
 // 
+
 });
 
 
 
 // helper functions 1111111111111111111111111111111111111111111
+function showIds() {
+     for (i = 0; i < 4; i++) {
+        var id = "#plads" + i;
+        console.log("setting "+id + " span");
+        $(id + " span").text($(id).attr('id'));
+}
+}
+
+
 function setStatus(x) {
 document.getElementById("status").innerHTML= x;
 }
@@ -91,29 +101,24 @@ function addStatus(x) {
 document.getElementById("status").innerHTML= document.getElementById("status").innerHTML + "<br>" + x;
 }
 
+function setStatus1(x) {
+document.getElementById("status1").innerHTML= x;
+}
+
+function addStatus1(x) {
+document.getElementById("status1").innerHTML= document.getElementById("status1").innerHTML + "<br>" + x;
+}
+
 function getSeatPair(el) {
     var parent;
     var child;
     parent = $(el).closest('.seat');
     if (parent.length == 1) {
-        setStatus("setting parent child");
         child = $(parent).find("div")[0];
         return([parent, child])
     }
-    setStatus("foundno seat");
     return([]);
 
-//    if (el.className == "seat") {
-//      parent = el;
-//      child = $("#"+el.id).find("div")[0];
-//    }
-//    else if (el.className =="seatdata") {
-//      child = el; 
-//      parent = el.parentNode;
-//    }
-//    else {
-//       return [];
-//    } 
     return ([parent, child]);
 }
 
@@ -131,6 +136,20 @@ function allSeatsFilled() {
 
 
 // event handling 2222222222222222222222222222222222222222222
+
+function finished() {
+ $("#textblock").text("Bordet er nu fyldt. Afslut ved at trække mobilen op på den person, som skal føre regnskab.");
+    $("#textblock").slideDown(1000);
+}
+
+function animateText() {
+    $("#textblock").slideUp(1000, function() {finished()});
+}
+
+
+
+
+
 function addPerson() {
     event.preventDefault();
      $("#newPerson").show();
@@ -140,7 +159,7 @@ function addPerson() {
 
 function submitPerson() {
   var person = document.getElementById("name").value;
-  $("#newPerson").hide(500);
+  $("#newPerson").hide(1500);
   if (person.length > 0) {
       $('#namelist').prepend('<li id="name' + currentNo + '" class="unseatedPlayer">' + person + '</ li>');
       $("#name"+currentNo).on({
@@ -157,7 +176,6 @@ function touchStart(event) {
   if (touch.target.id != "listadder") {
       event.preventDefault();
       dropName = touch.target.id;
-      setStatus("Starting with touch" + dropName);
       touch.target.style.backgroundColor = openColor;
   }
 }
@@ -167,16 +185,9 @@ function touchSeatStart(event) {
   var parentAnChild;
   var child;
 
-  setStatus("eseatstartevent" + touch.target.className);  
   parentAndChild = getSeatPair(touch.target);
-  addStatus("seat start with "+parentAndChild[0].attr('id'));
-//  [parent, child] = getSeatPair(touch.target)[0];
-//  child = getSeatPair(touch.target)[1];
-//  addStatus(parentAndChild[1].innerHTML.trim());
-//  addStatus(dropElements.length);
   event.preventDefault();
   if (parentAndChild[1].innerHTML.trim().length > 0) {
-     addStatus("starting drag");
      dropElements = parentAndChild;
      parentAndChild[0].css('background-color', openColor);
   }
@@ -206,26 +217,24 @@ function touchEnd(event) {
     var returnValue;
     var dragToPair = getSeatPair(el);
   
-   setStatus("target is" + touch.target.id);
       if (touch.target.id != "listadder" &&
           dragToPair.length == 2 && 
           dragToPair[1].innerHTML.trim() == "") {
-    addStatus("fandt element" + el.id);
          var from =  document.getElementById(dropName);
          dragToPair[1].innerHTML = from.innerHTML;
          dragToPair[0].css('background-color', droppedBgColor);
          $('#'+from.id).detach();
          dropName = "";
          if (allSeatsFilled()) {
-             $("#mobile").show();  
-   $("#mobile").css('background-color', 'red');
-   $("#mobile").on({
-      'touchstart': function(ev) {var e = ev.originalEvent; touchMobile(e);},
-//reusing seatMove
-      'touchmove': function(ev) {var e = ev.originalEvent; touchMove(e);},
-      'touchend': function(ev){var e = ev.originalEvent; touchMobileEnd(e); }
-     });
-
+             $("#mobile").css('background-color', 'red');
+             $("#mobile").show(0);  
+             $("#mobile").on({
+                 'touchstart': function(ev) {var e = ev.originalEvent; touchMobile(e);},
+                 //reusing seatMove
+                 'touchmove': function(ev) {var e = ev.originalEvent; touchMove(e);},
+                 'touchend': function(ev){var e = ev.originalEvent; touchMobileEnd(e); }
+              });
+          animateText();          
          }
     } 
     else {
@@ -239,13 +248,8 @@ function touchSeatEnd(event) {
     var touch = event.changedTouches[0];
     var el = document.elementFromPoint(touch.clientX, touch.clientY);
     var dragToPair = getSeatPair(el);
-    setStatus(dropElements);
-    addStatus(dropElements.length);
     if (el.id == "namelist" && dropElements.length !=0) {
-        setStatus("starting insert in list");
-        addStatus(dropElements[1].innerHTML);
         var name = dropElements[1].innerHTML;
-        addStatus('id="name' + currentNo + '" class="unseatedPlayer">' + name);
         $('#namelist').prepend(
           '<li id="name'+currentNo+'" class="unseatedPlayer">'+ name+'</li>');
       $("#name"+currentNo).on({
@@ -277,6 +281,9 @@ function touchSeatEnd(event) {
      dropElements = [];
 }
 
+function removeBlock() {
+   runs = 0;
+}
 
 function touchMobileEnd(ev) {
     var touch = ev.changedTouches[0];
@@ -284,30 +291,35 @@ function touchMobileEnd(ev) {
     var bottomPair = getSeatPair(el);
     var i;
     var oldContent = [];
-    var plads;
-    var par;
-    ev.preventDefault;
-    id = bottomPair[1].id;
-    no = id[id.length-1];
-    alert("in mobileend");
- 
-    offset = (no <= 2) ?  offset = 2-no : offset = 2 - no + 4;
-
+    var parent, child;
+    var seatId;
+     if (bottomPair.length != 0 && runs == 0) {
+//below in order to handle unknown dupllication of end event
+     setTimeout(function(){removeBlock()});
+    var bottomId = bottomPair[0].attr('id');
+    var nr = Number(bottomId[bottomId.length-1]);
+    var corner;
+    ev.preventDefault();
+    var offset = (nr <= 2) ?  offset = 2-nr : offset = 2 - nr + 4;
+    runs = runs +1;
     for (i = 0; i < 4; i++) {
-        plads = document.getElementById("plads"+i);
-        par = getSeatPair(plads);
-//        plads = getSeatPair($("#plads"+i)[0]); 
-        oldContent[i] = [par[0].innerHTML, par[1].innerHTML];
+        seatId = "plads"+i;
+        parent = document.getElementById(seatId);
+        child = $(parent).find("div")[0];
+        corner =  $("#"+seatId + " span").text();
+        oldContent[i] = [corner, child.innerHTML];
     }
-    setStatus("starting"); 
+    setStatus("updating");
     for (i = 0; i < 4; i++) {
-        plads = document.getElementById("plads"+i);
-        addStatus(plads.id);
-        par = getSeatPair(plads);
-        alert("efter par" + oldContent[(i + offset) % 4][0]);
-        par[0].innerHTML = oldContent[(i + offset) % 4][0]; 
-        par[1].innerHTML = oldContent[(i + offset) % 4][1]; 
+        var moveTo = (i+offset)%4;
+        id = "plads"+moveTo;
+        parent = document.getElementById("plads"+moveTo);
+        child = $(parent).find("div")[0];
+        addStatus("#"+id+" span " + $("#"+ id + " span").text() + oldContent[i][0]);
+        $("#" + id + " span").text(oldContent[i][0]);
+        child.innerHTML = oldContent[i][1]; 
     }
+}
 }
 
 function setToBottom(ev) {
@@ -350,9 +362,7 @@ document.getElementById("plads"+((start+i)%4)).innerHTML = dirs[i] + document.ge
 </head >
 
 <body >
-<p style="font-size:2em;">
-Træk først navne hen på pladserne. Ved fejl træk tilbage til listen. Tilføj navne - klik på '+++'.
-<div  style="width:100%; position:relative; top:0px; left:0px; ">
+<div  style="width:100%; position:relative; top:0px;; left:0px; ">
 <ul id="namelist" >
 <li id="name1" class="unseatedPlayer">Einar</li>
 <li id="name2" class="unseatedPlayer">Guddie</li>
@@ -395,7 +405,7 @@ Træk først navne hen på pladserne. Ved fejl træk tilbage til listen. Tilføj navn
    <div style="display:table-row; height:7em;">
      <div id="plads3" class="seat" 
 	  style="display:table-cell;"><span class="corner">Vest</span>
-       <div class="seatdata">a</div>
+       <div class="seatdata"></div>
      </div>
      
      <div id="space" 
@@ -403,20 +413,26 @@ Træk først navne hen på pladserne. Ved fejl træk tilbage til listen. Tilføj navn
 		 block-sizing:border-box;" >
      </div>
 
-     <div  id="plads2" class="seat" 
-	   style="display:table-cell; "><span class="corner">Øst</span>Øst
-       <div class="seatdata">b</div>
+     <div  id="plads1" class="seat" 
+	   style="display:table-cell; "><span class="corner">Øst</span>
+       <div class="seatdata"></div>
      </div>
 
    </div>
 </div>
 
-<div id="plads1" class="seat" style="margin: 5px auto;"><span class="corner">Syd</span>
-  <div class="seatdata">c</div>
+<div id="plads2" class="seat" style="margin: 5px auto;"><span class="corner">Syd</span>
+  <div class="seatdata"></div>
 </div>
 
 
-<div id="mobile"><img src="mobile53.svg" alt="TTTTTTTTT"></img></div>
+<div id="mobile" style="width:150px; height:100px; backgrund-color:grey;"><img style="display:none;" src="mobile53.png" alt="TTTTTTTTT"></img></div>
+
+<div id = "textblock" style="position:relative; padding-bottom:20px; height:100px; top:10px; left:0px; font-size:2em;">
+Træk først navne hen på pladserne. Ved fejl træk tilbage til listen. Tilføj navne - klik på '+++'.
+</div>
+
+
 
 <div id="status" style="font-size:2em; width:300px; 
 height:200px; background-color:lightgreen; display:inline-block;" >

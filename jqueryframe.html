@@ -2,8 +2,7 @@
 <html>
 <head>
 <style>
-#namelist {list-style-type:none; padding:10px; margin:10px; white-space:nowrap; height:300px; width:100%; overflow-hidden; overflow-x:auto; position:absolute;
-top:200px; left:0px; }
+#namelist {list-style-type:none; padding:10px; margin:10px; white-space:nowrap; height:300px; width:100%; overflow-hidden; overflow-x:auto; position:absolute; top:205px; left:0px; }
 .unseatedPlayer {height: 120px; font-size:2.5em;   
            background-color:lightgrey; border-radius:10px; 
            padding-left:5px; min-width: 100px;  
@@ -13,6 +12,7 @@ top:200px; left:0px; }
 </style>
 <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
 <script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<script src="animatescroll.noeasing.js"></script>
 <link rel="stylesheet" href="jquery-ui.min.css">
 <link rel="stylesheet" href="theme.css">
 
@@ -72,12 +72,23 @@ function randomTest() {
                                 .filter(function(){return this.nodeType === 3;})
    console.log($("#plads0 span").text());
    $("#plads0 span").text("changed");
-   console.log($("#plads0 span").attr('id'));
-   console.log($("#plads0").attr('id'));
-   console.log($("#plads0").closest('.klassen').attr('id'));
-   console.log($("#plads0 span").closest('.klassen').attr('id'));
-   console.log($("#plads0 div").closest('.klassen').attr('id'));
+//   console.log($("#plads0 span").attr('id'));
+//   console.log($("#plads0").attr('id'));
+//   console.log($("#plads0").closest('.klassen').attr('id'));
+//   console.log($("#plads0 span").closest('.klassen').attr('id'));
+//   console.log($("#plads0 div").closest('.klassen').attr('id'));
+   var no = 3;
+//   offset=2-no;
+   var offset = (no <= 2) ?  offset = 2-no : offset = 2 - no + 4;
+    console.log(offset);
+}
 
+function finished() {
+ $("#scrollable").text("other text");
+    $("#scrollable").slideDown(1000);
+}
+function scrollTest() {
+    $("#scrollable").slideUp(1000, function() {finished()});
 }
 
 
@@ -86,21 +97,25 @@ function randomTest() {
 </script>
 </head>
 <body>
-<ul id="namelist" >
+<div id = "scrollable" style="position:absolute; top:0; left:0; width:100%; height:200px; border:solid black 1px;">
+some text
+</div>
+
+<ul id="namelist">
 <li id="name1" class="unseatedPlayer">Einar</li>
-<li id="name2" class="unseatedPlayer">Guddie</li>
+<li id="name2" class="unseatedPlayer" >Guddie</li>
 <li id="name3" class="unseatedPlayer">Philippe</li>
 <li id="name4" class="unseatedPlayer">Ib</li>
 <li id="name5" class="unseatedPlayer">Bente</li>
 <li id="name6" class="unseatedPlayer">longerme6</li>
 <li id="name7" class="unseatedPlayer">longername7</li>
-<li id="name1" class="unseatedPlayer">Einar</li>
-<li id="name2" class="unseatedPlayer">Guddie</li>
-<li id="name3" class="unseatedPlayer">Philippe</li>
-<li id="name4" class="unseatedPlayer">Ib</li>
-<li id="name5" class="unseatedPlayer">Bente</li>
-<li id="name6" class="unseatedPlayer">longerme6</li>
-<li id="name7" class="unseatedPlayer">longername7</li>
+<li id="name11" class="unseatedPlayer">Einar</li>
+<li id="name12" class="unseatedPlayer">Guddie</li>
+<li id="name13" class="unseatedPlayer">Philippe</li>
+<li id="name14" class="unseatedPlayer">Ib</li>
+<li id="name15" class="unseatedPlayer">Bente</li>
+<li id="name16" class="unseatedPlayer">longerme6</li>
+<li id="name17" class="unseatedPlayer">longername7</li>
 <div id="listmanager" class="unseatedPlayer"
      style="position:absolute; bottom:0px; left:0px;" >+++</div>
 </ul>
@@ -117,7 +132,7 @@ function randomTest() {
            class="text ui-widget-content ui-corner-all">
 </div>
 
-<div><img src="mobile53.png" "></img></div>
+<div><img src="mobile53.png" ></img></div>
 
 
 <div id="plads0" style="text-overflow:clip; overflow:hidden; width:100px; margin:0 auto; border:solid black 1px;" class="klassen"><span id="thespan" class="corner">Nord</span> <div id="seat" style="font-size:2em; white-space:nowrap; text-align:center;">the</div>
