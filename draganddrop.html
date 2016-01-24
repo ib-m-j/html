@@ -37,6 +37,8 @@ var currentNo = 100;
 var runs = 0;
 
 $(document).ready(function(){
+  setStatus("starting");
+
   $(".unseatedPlayer").on({
       'touchstart': function(ev) {var e = ev.originalEvent; touchStart(e);},
       'touchmove': function(ev) {var e = ev.originalEvent; touchMove(e);},
@@ -62,28 +64,18 @@ $(document).ready(function(){
 
     var dialog;
 
-//    function submitting() {
-//        var res = $("#name").val();
-//        dialog.dialog("close");
-//        document.body.zoom.out();
-//    };
-//
-
-//    dialog = $( "#newPerson" ).dialog({
-//      autoOpen: false,
-//      position : {my: "left top", at:"left bottom", 
-//                         of:"#listadder"},
-//      dialogClass:"no-close",
-//      modal:true,
-//      width:550,
-//    });
-// 
 
 });
 
 
 
 // helper functions 1111111111111111111111111111111111111111111
+function getKey(event) {
+  if (event.which == 13) {
+       submitPerson();
+  }
+}     
+
 function showIds() {
      for (i = 0; i < 4; i++) {
         var id = "#plads" + i;
@@ -154,12 +146,15 @@ function addPerson() {
     event.preventDefault();
      $("#newPerson").show();
       document.getElementById("name").focus();
-//    $("#newPerson").dialog("open");
     };
+
+function resetInput() {
+     $("#newPerson input").val("");
+ }
 
 function submitPerson() {
   var person = document.getElementById("name").value;
-  $("#newPerson").hide(1500);
+  $("#newPerson").hide(500);
   if (person.length > 0) {
       $('#namelist').prepend('<li id="name' + currentNo + '" class="unseatedPlayer">' + person + '</ li>');
       $("#name"+currentNo).on({
@@ -167,6 +162,9 @@ function submitPerson() {
           'touchmove': function(ev) {var e = ev.originalEvent; touchMove(e);},
           'touchend': function(ev){var e = ev.originalEvent; touchEnd(e); }
       });
+      setStatus("#newPerson input" + " reset");
+      setTimeout(resetInput, 2000);
+      addStatus("completed");
       currentNo += 1;
   }
 }
@@ -227,7 +225,7 @@ function touchEnd(event) {
          dropName = "";
          if (allSeatsFilled()) {
              $("#mobile").css('background-color', 'red');
-             $("#mobile").show(0);  
+             $("#mobile").css('visibility', 'visible');  
              $("#mobile").on({
                  'touchstart': function(ev) {var e = ev.originalEvent; touchMobile(e);},
                  //reusing seatMove
@@ -295,7 +293,7 @@ function touchMobileEnd(ev) {
     var seatId;
      if (bottomPair.length != 0 && runs == 0) {
 //below in order to handle unknown dupllication of end event
-     setTimeout(function(){removeBlock()});
+     setTimeout(function(){removeBlock()}, 1000);
     var bottomId = bottomPair[0].attr('id');
     var nr = Number(bottomId[bottomId.length-1]);
     var corner;
@@ -309,13 +307,11 @@ function touchMobileEnd(ev) {
         corner =  $("#"+seatId + " span").text();
         oldContent[i] = [corner, child.innerHTML];
     }
-    setStatus("updating");
     for (i = 0; i < 4; i++) {
         var moveTo = (i+offset)%4;
         id = "plads"+moveTo;
         parent = document.getElementById("plads"+moveTo);
         child = $(parent).find("div")[0];
-        addStatus("#"+id+" span " + $("#"+ id + " span").text() + oldContent[i][0]);
         $("#" + id + " span").text(oldContent[i][0]);
         child.innerHTML = oldContent[i][1]; 
     }
@@ -344,19 +340,6 @@ function setToBottom(ev) {
   };
 }
 
-
-
-function setdirs(target) {
-var texts = ["aa","bb","cc"];
-var dirs = ["North", "East", "South", "West"]
-var res = "";
-var start = Number(target[target.length - 1]);
-//window.alert(start+" "+((start+0)%4));
-for (i=0;i<4;i++) {
-document.getElementById("plads"+((start+i)%4)).innerHTML = dirs[i] + document.getElementById("plads"+((start+i)%4)).innerHTML ;
-//window.alert("plads"+((start+i)%4)+"  "+i+" "+start+" "+(start+i));
-}
-}
 </script>
 
 </head >
@@ -375,18 +358,18 @@ document.getElementById("plads"+((start+i)%4)).innerHTML = dirs[i] + document.ge
      style="font-weight:bold; position:absolute; 
             bottom:8px; left:12px;">+++</div>
 </ul>
+
 <div id="newPerson"  title="" 
-     style="display:none; font-size:2em; 
-            background-color:rgb(10,170,10); width:500px;
+     style="display:none; font-size:2em; border:solid darkgreen 2px;
+            background-color:#ccffcc; width:500px;
             z-index:999; position:absolute; left:50px; 
             top:150px; padding:15px; border-radius:10px">Navnet vil blive lagt i listen
      <input type="text" name="name" 
-            id="name" value="" autocomplete="off"
-           class="text ui-widget-content ui-corner-all"
-	    style="height:50px; font-size:1.5em; width:90%; 
+            id="name" value="" autocomplete="off" onkeydown="getKey(event)"
+            style="height:50px; font-size:1.5em; width:90%; 
                    margin:10px;"><br>
      <button type ="button" style="font-size:1.5em; margin:10px; 
-             border-radius:8px;" 
+             border-radius:8px; border:solid darkgreen 2px; background-color:#77ff77;" 
              onclick="submitPerson()">OK</Button>
 </div>
 
@@ -426,7 +409,7 @@ document.getElementById("plads"+((start+i)%4)).innerHTML = dirs[i] + document.ge
 </div>
 
 
-<div id="mobile" style="width:150px; height:100px; backgrund-color:grey;"><img style="display:none;" src="mobile53.png" alt="TTTTTTTTT"></img></div>
+<div id="mobile" style="width:150px; height:100px; backgrund-color:grey; visibility:hidden;"><img src="mobile53.png" alt="TTTTTTTTT"></img></div>
 
 <div id = "textblock" style="position:relative; padding-bottom:20px; height:100px; top:10px; left:0px; font-size:2em;">
 Træk først navne hen på pladserne. Ved fejl træk tilbage til listen. Tilføj navne - klik på '+++'.

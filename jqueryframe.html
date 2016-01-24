@@ -91,7 +91,9 @@ function scrollTest() {
     $("#scrollable").slideUp(1000, function() {finished()});
 }
 
-
+function checkKey(event) {
+  alert("in checkkey");
+}
 
 
 </script>
@@ -117,7 +119,7 @@ some text
 <li id="name16" class="unseatedPlayer">longerme6</li>
 <li id="name17" class="unseatedPlayer">longername7</li>
 <div id="listmanager" class="unseatedPlayer"
-     style="position:absolute; bottom:0px; left:0px;" >+++</div>
+     style="position:absolute; bottom:0px; left:0px;" onclick="opennow()" >+++</div>
 </ul>
 
 <div style="position:absolute; top:550px;">
@@ -128,7 +130,7 @@ some text
 
 <div id="newPerson" title="Skriv navnet">Navnet vil blive lagt forrest i listen
      <label for="name"> Navn</label>
-     <input type="text" name="name" id="name" value=""
+     <input type="text" name="name" id="name" value="" onkeydown="checkKey(event)"
            class="text ui-widget-content ui-corner-all">
 </div>
 
