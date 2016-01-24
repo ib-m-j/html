@@ -13,8 +13,8 @@ top:200px; left:0px; }
 </style>
 <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
 <script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
-//<link rel="stylesheet" href="jquery-ui.min.css">
-//<link rel="stylesheet" href="theme.css">
+<link rel="stylesheet" href="jquery-ui.min.css">
+<link rel="stylesheet" href="theme.css">
 
 
 
@@ -43,7 +43,7 @@ $("#newPerson").dialog("open");
 
 
 
- $(document).ready(function() {
+$(document).ready(function() {
     var dialog, form;
 
     function submitting() {
@@ -65,8 +65,21 @@ $("#newPerson").dialog("open");
           Cancel: function() { dialog.dialog("close");}
       }
     });
- 
 });
+
+function randomTest() {
+   var textarea = $("#plads0").contents()
+                                .filter(function(){return this.nodeType === 3;})
+   console.log($("#plads0 span").text());
+   $("#plads0 span").text("changed");
+   console.log($("#plads0 span").attr('id'));
+   console.log($("#plads0").attr('id'));
+   console.log($("#plads0").closest('.klassen').attr('id'));
+   console.log($("#plads0 span").closest('.klassen').attr('id'));
+   console.log($("#plads0 div").closest('.klassen').attr('id'));
+
+}
+
 
 
 
@@ -96,6 +109,7 @@ $("#newPerson").dialog("open");
 <button type="button" onclick="detach()" > detach </button>
 <button type="button" onclick="attach()" > attach </button>
 <button type="button" id="opener" onclick="opennow()"> input </button>
+<button type="button" id="randomtest" onclick="randomTest()"> randomtest </button>
 
 <div id="newPerson" title="Skriv navnet">Navnet vil blive lagt forrest i listen
      <label for="name"> Navn</label>
@@ -104,8 +118,7 @@ $("#newPerson").dialog("open");
 </div>
 
 
-<div style="text-overflow:clip; overflow:hidden; width:100px; margin:0 auto; border:solid black 1px;">Nord
-  <div style="font-size:2em; white-space:nowrap; text-align:center;">the</div>
+<div id="plads0" style="text-overflow:clip; overflow:hidden; width:100px; margin:0 auto; border:solid black 1px;" class="klassen"><span id="thespan" class="corner">Nord</span> <div id="seat" style="font-size:2em; white-space:nowrap; text-align:center;">the</div>
 </div>
 
 <div style="display:table; width:100%;; border:solid black 1px; table-layout:fixed;">

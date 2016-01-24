@@ -1,6 +1,9 @@
 <!DOCTYPE HTML>
 <html>
 <head>
+<script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+<script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<link rel="stylesheet" href="jquery-ui.min.css">
 
 <style>
 #other {position:absolute; top:300px; width:20px;height:20px;padding:10px;border:1px solid #aaaaaa;}
@@ -19,10 +22,11 @@
         text-overflow:clip; overflow:hidden; height:5em;}
 .seatdata {font-size:2.2em; margin: 0.2em auto o.2em; text-align:center; 
             white-space:nowrap; text-overflow:clip; overflow:hidden;}
+.ui-dialog-titlebar-close{
+    display: none;
+}
 </style>
-<script src="http://code.jquery.com/jquery-1.10.2.js"></script>
-<script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
-<link rel="stylesheet" href="jquery-ui.min.css">
+</style>
 <script>
 
 var droppedBgColor = "#77ff77";
@@ -49,29 +53,31 @@ $(document).ready(function(){
 
    $("#listadder").on({'touchstart' : function(ev) {addPerson();}});
 
+   $("#mobile").on({
+      'touchstart': function(ev) {var e = ev.originalEvent; touchMobileStart(e);},
+//reusing seatMove
+      'touchmove': function(ev) {var e = ev.originalEvent; touchMove(e);},
+      'touchend': function(ev){var e = ev.originalEvent; touchMobileEnd(e); }
+     });
 
     var dialog;
 
-    function submitting() {
-        var res = $("#name").val();
-        dialog.dialog("close");
-        document.body.zoom.out();
-    };
+//    function submitting() {
+//        var res = $("#name").val();
+//        dialog.dialog("close");
+//        document.body.zoom.out();
+//    };
+//
 
-
-    dialog = $( "#newPerson" ).dialog({
-      autoOpen: false,
-      position : {my: "left top", at:"left bottom", 
-                         of:"#listadder"},
-      dialogClass:"no-close",
-      modal:true,
-      width:550,
-      buttons: {
-          "Indsæt i listen" : submitting,
-          "Retur": function() { dialog.dialog("close");}
-      }
-    });
- 
+//    dialog = $( "#newPerson" ).dialog({
+//      autoOpen: false,
+//      position : {my: "left top", at:"left bottom", 
+//                         of:"#listadder"},
+//      dialogClass:"no-close",
+//      modal:true,
+//      width:550,
+//    });
+// 
 });
 
 
@@ -102,15 +108,39 @@ function getSeatPair(el) {
     return ([parent, child]);
 }
 
+function allSeatsFilled() {
+    var theList = $(".seatdata");
+    var allFilled = true;
+    for (i=0; i<theList.length; i++) {
+        if (theList[i].innerHTML.trim().length == 0) {
+           allFilled = false;
+           break;
+        }
+    }
+    return (allFilled);
+}
+
 
 // event handling 2222222222222222222222222222222222222222222
 function addPerson() {
     event.preventDefault();
-    $("#newPerson").dialog("open");
+     $("#newPerson").show();
+      document.getElementById("name").focus();
+//    $("#newPerson").dialog("open");
     };
 
 function submitPerson() {
-  alert("submitting");
+  var person = document.getElementById("name").value;
+  $("#newPerson").hide(500);
+  if (person.length > 0) {
+      $('#namelist').prepend('<li id="name' + currentNo + '" class="unseatedPlayer">' + person + '</ li>');
+      $("#name"+currentNo).on({
+          'touchstart': function(ev) {var e = ev.originalEvent; touchStart(e);},
+          'touchmove': function(ev) {var e = ev.originalEvent; touchMove(e);},
+          'touchend': function(ev){var e = ev.originalEvent; touchEnd(e); }
+      });
+      currentNo += 1;
+  }
 }
 
 function touchStart(event) {
@@ -139,6 +169,13 @@ function touchSeatStart(event) {
       parent.style.backgroundColor = openColor;
 }
 }
+
+function touchMobileStart(event) {
+   event.preventDefault();
+   $("#mobile").css('background-color', 'grey');
+}
+
+
 function touchMove(event) {
   event.preventDefault();
 }
@@ -168,6 +205,17 @@ function touchEnd(event) {
          dragToPair[0].style.backgroundColor = droppedBgColor;
          $('#'+from.id).detach();
          dropName = "";
+         if (allSeatsFilled()) {
+             $("#mobile").show();  
+   $("#mobile").css('background-color', 'red');
+   $("#mobile").on({
+      'touchstart': function(ev) {var e = ev.originalEvent; touchMobile(e);},
+//reusing seatMove
+      'touchmove': function(ev) {var e = ev.originalEvent; touchMove(e);},
+      'touchend': function(ev){var e = ev.originalEvent; touchMobileEnd(e); }
+     });
+
+         }
     } 
     else {
       document.getElementById(dropName).style.backgroundColor = droppedBgColor;
@@ -212,6 +260,38 @@ function touchSeatEnd(event) {
      }
 }
 
+
+function touchMobileEnd(ev) {
+    var touch = ev.changedTouches[0];
+    var el = document.elementFromPoint(touch.clientX, touch.clientY);
+    var bottomPair = getSeatPair(el);
+    var i;
+    var oldContent = [];
+    var plads;
+    var par;
+    ev.preventDefault;
+    id = bottomPair[1].id;
+    no = id[id.length-1];
+    alert("in mobileend");
+ 
+    offset = (no <= 2) ?  offset = 2-no : offset = 2 - no + 4;
+
+    for (i = 0; i < 4; i++) {
+        plads = document.getElementById("plads"+i);
+        par = getSeatPair(plads);
+//        plads = getSeatPair($("#plads"+i)[0]); 
+        oldContent[i] = [par[0].innerHTML, par[1].innerHTML];
+    }
+    setStatus("starting"); 
+    for (i = 0; i < 4; i++) {
+        plads = document.getElementById("plads"+i);
+        addStatus(plads.id);
+        par = getSeatPair(plads);
+        alert("efter par" + oldContent[(i + offset) % 4][0]);
+        par[0].innerHTML = oldContent[(i + offset) % 4][0]; 
+        par[1].innerHTML = oldContent[(i + offset) % 4][1]; 
+    }
+}
 
 function setToBottom(ev) {
   event.preventDefault();
@@ -268,12 +348,27 @@ Træk først navne hen på pladserne. Ved fejl træk tilbage til listen. Tilføj navn
      style="font-weight:bold; position:absolute; 
             bottom:8px; left:12px;">+++</div>
 </ul>
+<div id="newPerson"  title="" 
+     style="display:none; font-size:2em; 
+            background-color:rgb(10,170,10); width:500px;
+            z-index:999; position:absolute; left:50px; 
+            top:150px; padding:15px; border-radius:10px">Navnet vil blive lagt i listen
+     <input type="text" name="name" 
+            id="name" value="" autocomplete="off"
+           class="text ui-widget-content ui-corner-all"
+	    style="height:50px; font-size:1.5em; width:90%; 
+                   margin:10px;"><br>
+     <button type ="button" style="font-size:1.5em; margin:10px; 
+             border-radius:8px;" 
+             onclick="submitPerson()">OK</Button>
+</div>
+
 
 </div>
 
 
 <div style="position:relative; top:50px; left:0px;">
-<div id="plads1" class="seat" style="margin:0 auto;">Nord
+<div id="plads0" class="seat" style="margin:0 auto;"><span class="corner">Nord</span>
   <div class="seatdata" ></div>
 </div>
 
@@ -281,9 +376,9 @@ Træk først navne hen på pladserne. Ved fejl træk tilbage til listen. Tilføj navn
 <div style="display:table; padding: 8px; width:100%;  table-layout:fixed;
        white-space:nowrap; overflow:hidden; overflow-x:auto;">
    <div style="display:table-row; height:7em;">
-     <div id="plads4" class="seat" 
-	  style="display:table-cell;">Vest
-       <div class="seatdata"></div>
+     <div id="plads3" class="seat" 
+	  style="display:table-cell;"><span class="corner">Vest</span>
+       <div class="seatdata">a</div>
      </div>
      
      <div id="space" 
@@ -291,18 +386,21 @@ Træk først navne hen på pladserne. Ved fejl træk tilbage til listen. Tilføj navn
 		 block-sizing:border-box;" >
      </div>
 
-     <div  id="plads3" class="seat" 
-	   style="display:table-cell; ">Øst
-       <div class="seatdata"></div>
+     <div  id="plads2" class="seat" 
+	   style="display:table-cell; "><span class="corner">Øst</span>Øst
+       <div class="seatdata">b</div>
      </div>
 
    </div>
 </div>
 
-<div id="plads2" class="seat" style="margin: 5px auto;">Syd
-  <div class="seatdata"></div>
+<div id="plads1" class="seat" style="margin: 5px auto;"><span class="corner">Syd</span>
+  <div class="seatdata">c</div>
 </div>
 
+
+<div id="mobile" style="width:150px; height:150px; display:none; 
+      background-color:lightgrey;"><img src="mobile53.png" alt="TTTTTTTTT"></img></div>
 
 <div id="status" style="font-size:2em; width:300px; 
 height:200px; background-color:lightgreen; display:inline-block;" >
@@ -311,14 +409,6 @@ height:200px; background-color:lightgreen; display:inline-block;" >
 </div>
 </div>
 
-
-<div id="newPerson"  title="" style="font-size:2em;">Navnet vil blive lagt forrest i listen
-     <input type="text" name="name" id="name" value=""
-           class="text ui-widget-content ui-corner-all"
-	    style="height:50px; font-size:1.5em; width:100%">
-     <button type ="button" style="font-size:1.5em;" 
-             onclick="submitPerson()">OK</Button>
-</div>
 
 
 
