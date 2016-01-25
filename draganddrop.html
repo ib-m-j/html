@@ -4,7 +4,7 @@
 <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
 <script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
 <link rel="stylesheet" href="jquery-ui.min.css">
-
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 <style>
 #other {position:absolute; top:300px; width:20px;height:20px;padding:10px;border:1px solid #aaaaaa;}
 #namelist {list-style-type:none; height:275px; padding:10px; 
@@ -191,9 +191,10 @@ function touchSeatStart(event) {
   }
 }
 
+
 function touchMobileStart(event) {
    event.preventDefault();
-   $("#mobile").css('background-color', 'grey');
+   $("#mobile").css('background-color', openColor );
 }
 
 
@@ -207,6 +208,11 @@ function dropTouch(from, toParent, toChild) {
   $('#'+from.id).detach();
   dropName = "";
 }
+
+function showImage() {
+   $("#image").css('visibility', 'visible'); 
+}
+
 
 function touchEnd(event) {
     event.preventDefault();
@@ -224,13 +230,17 @@ function touchEnd(event) {
          $('#'+from.id).detach();
          dropName = "";
          if (allSeatsFilled()) {
-             $("#mobile").css('background-color', 'red');
-             $("#mobile").css('visibility', 'visible');  
+             $("#mobile").css('background-color', droppedBgColor);
+             $("#mobile").animate({width:'150px'}, 1000);
+             setTimeout(function(){showImage()}, 1000);
              $("#mobile").on({
-                 'touchstart': function(ev) {var e = ev.originalEvent; touchMobile(e);},
+                 'touchstart': function(ev) 
+                     {var e = ev.originalEvent; touchMobile(e);},
                  //reusing seatMove
-                 'touchmove': function(ev) {var e = ev.originalEvent; touchMove(e);},
-                 'touchend': function(ev){var e = ev.originalEvent; touchMobileEnd(e); }
+                 'touchmove': function(ev) 
+                     {var e = ev.originalEvent; touchMove(e);},
+                 'touchend': function(ev)
+                     {var e = ev.originalEvent; touchMobileEnd(e); }
               });
           animateText();          
          }
@@ -280,6 +290,7 @@ function touchSeatEnd(event) {
 }
 
 function removeBlock() {
+   addStatus("removing block");
    runs = 0;
 }
 
@@ -291,6 +302,8 @@ function touchMobileEnd(ev) {
     var oldContent = [];
     var parent, child;
     var seatId;
+    setStatus("starting mobileend");
+//    addStatus(ev.ongoingTouches.length);
      if (bottomPair.length != 0 && runs == 0) {
 //below in order to handle unknown dupllication of end event
      setTimeout(function(){removeBlock()}, 1000);
@@ -315,6 +328,8 @@ function touchMobileEnd(ev) {
         $("#" + id + " span").text(oldContent[i][0]);
         child.innerHTML = oldContent[i][1]; 
     }
+    $("#mobile").css('background-color', droppedBgColor);
+
 }
 }
 
@@ -409,7 +424,11 @@ function setToBottom(ev) {
 </div>
 
 
-<div id="mobile" style="width:150px; height:100px; backgrund-color:grey; visibility:hidden;"><img src="mobile53.png" alt="TTTTTTTTT"></img></div>
+<div id="mobile" style="width:0px; text-align:center; 
+        background-color:#77ff77;">
+     <i  id="image" style="visibility:hidden; font-size:9em; color:#118811; " 
+         class="fa fa-mobile"></i>
+</div>
 
 <div id = "textblock" style="position:relative; padding-bottom:20px; height:100px; top:10px; left:0px; font-size:2em;">
 Træk først navne hen på pladserne. Ved fejl træk tilbage til listen. Tilføj navne - klik på '+++'.
