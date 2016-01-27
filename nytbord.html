@@ -2,16 +2,17 @@
 <html>
 <head>
 <style>
-.table {position:absolute; top:100px; overflow:hidden; overflow-x:auto; 
-	width:100%; height:267em;}
+.table {position:absolute; top:100px; left:2%; 
+        overflow:hidden; overflow-x:auto; 
+	width:96%;}
 .seat {position:absolute; border:solid 2px; border-color:darkgreen; 
-       border-radius:10px; 
-       width: 17em; font-size:1.5em;  
-	     background-color:#ccffcc; padding-left: 8px; padding-right:8px;
-       block-sizing:border-box; 
-       text-overflow:clip; overflow:hidden; height:5em;}
-.seatdata {font-size:2.2em; line-height:1.2em; margin: 0.2em auto 0.2em; text-align:center; 
-            white-space:nowrap; text-overflow:clip; overflow:hidden;}
+       border-radius:10px; margin:0;
+       font-size:1.5em; background-color:#ccffcc; 
+       padding-left: 8px; padding-right:8px;
+       text-overflow:clip; overflow:hidden;}
+.seatdata {font-size:2.2em; line-height:1.2em; 
+           margin: 0.2em auto 0.2em; text-align:center; 
+           white-space:nowrap; text-overflow:clip; overflow:hidden;}
 .corner {}
 </style>
 
@@ -23,30 +24,52 @@
 
 <script>
 $(document).ready(function() {
-    var dialog, form;
+   var dialog, form;
+   var screenWidth = Number($(".table").css('width').replace('px',''));
+   var spaceWidth = screenWidth/8;
+   var verticalSpacing = 8;
+   var height = 110;
+   var horizontalPadding = 20;
+   var outerButtonWidth = (screenWidth - spaceWidth)/2;
+   var buttonWidth = outerButtonWidth - 20;
+   var outerButtonHeight = height + 4;
+   console.log(Number($(".table").css('width').substring(0,3)));
 
+   $("#plads0").css({'width':buttonWidth,'height':height,
+                     'left':(screenWidth - (outerButtonWidth))/2,
+                     'top':0});
+   $("#plads1").css({'width':buttonWidth, 'height':height,
+                     'left':outerButtonWidth + spaceWidth, 
+                     'top': (outerButtonHeight + verticalSpacing)});
+   $("#plads2").css({'width':buttonWidth, 'height':height, 
+                     'top':2*(outerButtonHeight + verticalSpacing),
+                     'left':(screenWidth - outerButtonWidth)/2});
+   $("#plads3").css({'width':buttonWidth, 'height':height,
+                     'left':0, 'top':outerButtonHeight + verticalSpacing});
+   $(".table").css('height', 3*outerButtonHeight + 2*verticalSpacing);                  
+
+   
 });
 
 </script>
 </head>
 <body >
-  <div id="bordnr1" class="table" style="border:solid black 1px;">
-    <div id="plads0"  class="seat" style="left:calc((100% - 15em) / 2);">
-			<span class="corner">NordÆØÅggg</span>
-			<div class="seatdata" >ÛÛgggggÛÛÛÛÛÛ</div>
+  <div id="bordnr1" class="table" >
+    <div id="plads0"  class="seat" >
+			<span class="corner">Nord</span>
+			<div class="seatdata" >AA</div>
 		</div>
-		<div id="plads1"  class="seat" style="top:5.6em; right:0em;">
+		<div id="plads1"  class="seat" >
 			<span class="corner">Øst</span>
-			<div class="seatdata" >ÛÛggggggÛÛÛÛÛÛ</div>
+			<div class="seatdata" >BB</div>
 		</div>
-		<div id="plads2"  class="seat" style="top:11.2em; left:calc((100% - 15em) / 2);>
+		<div id="plads2"  class="seat" >
 			<span class="corner">Syd</span>
-			<div class="seatdata" >ÛÛggggggÛÛÛÛÛÛ</div>
+			<div class="seatdata" >CC</div>
 		</div>
-		<div id="plads3"  class="seat" 
-			  style="top:5.6em; >
+		<div id="plads3"  class="seat">
 			<span class="corner">Vest</span>
-			<div class="seatdata" >ÛÛggggggÛÛÛÛÛÛ</div>
+			<div class="seatdata" >DD</div>
 		</div>
 	</div>	
 		
