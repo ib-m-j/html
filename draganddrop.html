@@ -16,14 +16,18 @@
            padding-right:5px; margin:10px; 
            display:inline-block; text-align:center; 
            line-height:120px;}
-.seat {border:solid 2px; border-color:darkgreen; border-radius:10px; width: 
-       calc((100% - 9em;) / 2); font-size:1.5em; background-color:#ccffcc;
-        box-sizing:border-box; padding-left: 5px; padding-top:5px;
-        text-overflow:clip; overflow:hidden; height:5em;}
-.seatdata {font-size:2.2em; margin: 0.2em auto o.2em; text-align:center; 
-            white-space:nowrap; text-overflow:clip; overflow:hidden;}
-.ui-dialog-titlebar-close{
-    display: none;
+.table {position:relative; top:50px; left:2%; 
+        overflow:hidden; overflow-x:auto; height:400px;
+	width:96%;}
+.seat {position:absolute; border:solid 2px; border-color:darkgreen; 
+       border-radius:10px; margin:0;
+       font-size:1.5em; background-color:#ccffcc; 
+       padding-left: 8px; padding-right:8px;
+       text-overflow:clip; overflow:hidden;}
+.seatdata {font-size:2.2em; line-height:1.2em; 
+           margin: 0.2em auto 0.2em; text-align:center; 
+           white-space:nowrap; text-overflow:clip; overflow:hidden;}
+.corner {}
 }
 </style>
 </style>
@@ -37,7 +41,6 @@ var currentNo = 100;
 var runs = 0;
 
 $(document).ready(function(){
-  setStatus("starting");
 
   $(".unseatedPlayer").on({
       'touchstart': function(ev) {var e = ev.originalEvent; touchStart(e);},
@@ -62,9 +65,29 @@ $(document).ready(function(){
       'touchend': function(ev){var e = ev.originalEvent; touchMobileEnd(e); }
      });
 
-    var dialog;
+   var screenWidth = Number($(".table").css('width').replace('px',''));
+//   var screenWidth = 700;
+   var spaceWidth = screenWidth/8;
+   var verticalSpacing = 8;
+   var height = 110;
+   var horizontalPadding = 20;
+   var outerButtonWidth = (screenWidth - spaceWidth)/2;
+   var buttonWidth = outerButtonWidth - 20;
+   var outerButtonHeight = height + 4;
 
 
+   $("#plads0").css({'width':buttonWidth,'height':height,
+                     'left':(screenWidth - (outerButtonWidth))/2,
+                     'top':0});
+   $("#plads1").css({'width':buttonWidth, 'height':height,
+                     'left':outerButtonWidth + spaceWidth, 
+                     'top': (outerButtonHeight + verticalSpacing)});
+   $("#plads2").css({'width':buttonWidth, 'height':height, 
+                     'top':2*(outerButtonHeight + verticalSpacing),
+                     'left':(screenWidth - outerButtonWidth)/2});
+   $("#plads3").css({'width':buttonWidth, 'height':height,
+                     'left':0, 'top':outerButtonHeight + verticalSpacing});
+   $(".table").css('height', 3*outerButtonHeight + 2*verticalSpacing);                  
 });
 
 
@@ -85,22 +108,22 @@ function showIds() {
 }
 
 
-function setStatus(x) {
-document.getElementById("status").innerHTML= x;
-}
-
-function addStatus(x) {
-document.getElementById("status").innerHTML= document.getElementById("status").innerHTML + "<br>" + x;
-}
-
-function setStatus1(x) {
-document.getElementById("status1").innerHTML= x;
-}
-
-function addStatus1(x) {
-document.getElementById("status1").innerHTML= document.getElementById("status1").innerHTML + "<br>" + x;
-}
-
+//function setStatus(x) {
+//document.getElementById("status").innerHTML= x;
+//}
+//
+//function addStatus(x) {
+//document.getElementById("status").innerHTML= document.getElementById("status").innerHTML + "<br>" + x;
+//}
+//
+//function setStatus1(x) {
+//document.getElementById("status1").innerHTML= x;
+//}
+//
+//function addStatus1(x) {
+//document.getElementById("status1").innerHTML= document.getElementById("status1").innerHTML + "<br>" + x;
+//}
+//
 function getSeatPair(el) {
     var parent;
     var child;
@@ -162,9 +185,9 @@ function submitPerson() {
           'touchmove': function(ev) {var e = ev.originalEvent; touchMove(e);},
           'touchend': function(ev){var e = ev.originalEvent; touchEnd(e); }
       });
-      setStatus("#newPerson input" + " reset");
+//      setStatus("#newPerson input" + " reset");
       setTimeout(resetInput, 2000);
-      addStatus("completed");
+//      addStatus("completed");
       currentNo += 1;
   }
 }
@@ -290,7 +313,7 @@ function touchSeatEnd(event) {
 }
 
 function removeBlock() {
-   addStatus("removing block");
+//   addStatus("removing block");
    runs = 0;
 }
 
@@ -302,7 +325,6 @@ function touchMobileEnd(ev) {
     var oldContent = [];
     var parent, child;
     var seatId;
-    setStatus("starting mobileend");
 //    addStatus(ev.ongoingTouches.length);
      if (bottomPair.length != 0 && runs == 0) {
 //below in order to handle unknown dupllication of end event
@@ -392,56 +414,41 @@ function setToBottom(ev) {
 </div>
 
 
-<div style="position:relative; top:50px; left:0px;">
-<div id="plads0" class="seat" style="margin:0 auto;"><span class="corner">Nord</span>
-  <div class="seatdata" ></div>
+
+<div id="bordnr1" class="table" style="solid black 1px;">
+  <div id="plads0"  class="seat" >
+    <span class="corner">Nord</span>
+    <div class="seatdata" ></div>
+  </div>
+  <div id="plads1"  class="seat" >
+    <span class="corner">Øst</span>
+    <div class="seatdata" ></div>
+  </div>
+  <div id="plads2"  class="seat" >
+    <span class="corner">Syd</span>
+    <div class="seatdata" ></div>
+  </div>
+  <div id="plads3"  class="seat">
+    <span class="corner">Vest</span>
+    <div class="seatdata" ></div>
+  </div>
+  
 </div>
-
-	    
-<div style="display:table; padding: 8px; width:100%;  table-layout:fixed;
-       white-space:nowrap; overflow:hidden; overflow-x:auto;">
-   <div style="display:table-row; height:7em;">
-     <div id="plads3" class="seat" 
-	  style="display:table-cell;"><span class="corner">Vest</span>
-       <div class="seatdata"></div>
-     </div>
-     
-     <div id="space" 
-	  style="display:table-cell; width:7em; margin: 5px auto;  
-		 block-sizing:border-box;" >
-     </div>
-
-     <div  id="plads1" class="seat" 
-	   style="display:table-cell; "><span class="corner">Øst</span>
-       <div class="seatdata"></div>
-     </div>
-
-   </div>
-</div>
-
-<div id="plads2" class="seat" style="margin: 5px auto;"><span class="corner">Syd</span>
-  <div class="seatdata"></div>
-</div>
-
 
 <div id="mobile" style="width:0px; text-align:center; 
-        background-color:#77ff77;">
-     <i  id="image" style="visibility:hidden; font-size:9em; color:#118811; " 
-         class="fa fa-mobile"></i>
+			background-color:#77ff77;">
+  <i  id="image" style="visibility:hidden; font-size:9em; color:#118811; " 
+      class="fa fa-mobile"></i>
 </div>
 
-<div id = "textblock" style="position:relative; padding-bottom:20px; height:100px; top:10px; left:0px; font-size:2em;">
+
+
+
+<div id = "textblock" style="position:relative; 
+          padding-bottom:20px; height:100px; top:40px; left:0px; font-size:3em;">
 Træk først navne hen på pladserne. Ved fejl træk tilbage til listen. Tilføj navne - klik på '+++'.
 </div>
 
-
-
-<div id="status" style="font-size:2em; width:300px; 
-height:200px; background-color:lightgreen; display:inline-block;" >
-</div>
-<div id="status1" style="font-size:2em; width:300px; height:200px; background-color:lightgreen; display:inline-block; float:right;" >
-</div>
-</div>
 
 
 
