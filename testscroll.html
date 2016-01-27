@@ -1,0 +1,102 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<style>
+.screenelement {position:absolute; top:20px; width:200px; height:600px; 
+                border:solid black 1px;}
+.seat {border:solid 2px; border-color:darkgreen; border-radius:10px; width: 
+       calc((100% - 9em;) / 2); font-size:1.5em; background-color:#ccffcc;
+        padding-left: 5px; padding-top:5px;
+        text-overflow:clip; overflow:hidden; height:5em;}
+.seatdata {font-size:2.2em; margin: 0.2em auto o.2em; text-align:center; 
+            white-space:nowrap; text-overflow:clip; overflow:hidden;}
+.bidTricks {font-size:3em; width:60px; height:60px; border:solid black 1px;
+            position:absolute; line-height:60px;}
+</style>
+
+<script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+<script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<link rel="stylesheet" 
+      href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css"> 
+</link>
+
+<script>
+$(document).ready(function() {
+    var dialog, form;
+
+});
+
+function scrollTo(x) {
+  $("#scrollable").animate({scrollLeft:x});
+}
+
+</script>
+</head>
+<body>
+
+	<button type="button"  onClick="scrollTo(800)" style="width:100px; height:100px;">
+
+
+<div id = "scrollable" style="position:absolute; top:0; left:0; width:100%; height:700px; border:solid black 1px; 
+           white-space:nowrap; overflow:hidden;  overflow-x:auto;">
+	<div class="screenelement" style="left:100px; width:720px;">
+		
+<div id="plads0" class="seat" style="margin:0 auto;"><span class="corner">Nord</span>
+  <div class="seatdata" ></div>
+</div>
+
+	    
+<div style="display:table; padding: 8px; width:700px;  table-layout:fixed;
+       white-space:nowrap; overflow:hidden; overflow-x:auto;">
+   <div style="display:table-row; height:7em;">
+     <div id="plads3" class="seat" 
+	  style="display:table-cell;"><span class="corner">Vest</span>
+       <div class="seatdata"></div>
+     </div>
+     
+     <div id="space" 
+	  style="display:table-cell; width:7em; margin: 5px auto;  
+		 block-sizing:border-box;" >
+     </div>
+
+     <div  id="plads1" class="seat" 
+	   style="display:table-cell; "><span class="corner">Øst</span>
+       <div class="seatdata"></div>
+     </div>
+
+   </div>
+</div>
+
+<div id="plads2" class="seat" style="margin: 5px auto;"><span class="corner">Syd</span>
+  <div class="seatdata"></div>
+</div>
+
+<div id="mobile" style="width:150px; text-align:center; 
+        background-color:#77ff77;">
+     <i  id="image" style="font-size:9em; color:#118811; " 
+         class="fa fa-mobile"></i>
+</div>
+
+
+	</div>
+	<div class="screenelement" style="left:900px;">
+    <div class="bidTricks" style="left:10px; top:20px;">1</div>		
+    <div class="bidTricks" style="left:70px; top:20px;">2</div>		
+    <div class="bidTricks" style="left:10px; top:90px;">3</div>		
+    <div class="bidTricks" style="left:70px; top:90px;">4</div>		
+    <div class="bidTricks" style="left:10px; top:160px;">5</div>		
+    <div class="bidTricks" style="left:70px; top:160px;">6</div>		
+    <div class="bidTricks" style="left:10px; top:230px;">7</div>		
+
+	</div>
+	<div class="screenelement" style="left:1100px;"></div>
+	<div class="screenelement" style="left:1300px;"></div>
+	<div class="screenelement" style="left:1500px;"></div>
+	<div class="screenelement" style="left:1700px;"></div>
+	<div class="screenelement" style="left:1900px;"></div>
+	<div class="screenelement" style="left:2100px;"></div>
+
+</div>
+
+</body>
+</html>

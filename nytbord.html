@@ -1,0 +1,54 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<style>
+.table {position:absolute; top:100px; overflow:hidden; overflow-x:auto; 
+	width:100%; height:267em;}
+.seat {position:absolute; border:solid 2px; border-color:darkgreen; 
+       border-radius:10px; 
+       width: 17em; font-size:1.5em;  
+	     background-color:#ccffcc; padding-left: 8px; padding-right:8px;
+       block-sizing:border-box; 
+       text-overflow:clip; overflow:hidden; height:5em;}
+.seatdata {font-size:2.2em; line-height:1.2em; margin: 0.2em auto 0.2em; text-align:center; 
+            white-space:nowrap; text-overflow:clip; overflow:hidden;}
+.corner {}
+</style>
+
+<script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+<script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<link rel="stylesheet" 
+      href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css"> 
+</link>
+
+<script>
+$(document).ready(function() {
+    var dialog, form;
+
+});
+
+</script>
+</head>
+<body >
+  <div id="bordnr1" class="table" style="border:solid black 1px;">
+    <div id="plads0"  class="seat" style="left:calc((100% - 15em) / 2);">
+			<span class="corner">NordÆØÅggg</span>
+			<div class="seatdata" >ÛÛgggggÛÛÛÛÛÛ</div>
+		</div>
+		<div id="plads1"  class="seat" style="top:5.6em; right:0em;">
+			<span class="corner">Øst</span>
+			<div class="seatdata" >ÛÛggggggÛÛÛÛÛÛ</div>
+		</div>
+		<div id="plads2"  class="seat" style="top:11.2em; left:calc((100% - 15em) / 2);>
+			<span class="corner">Syd</span>
+			<div class="seatdata" >ÛÛggggggÛÛÛÛÛÛ</div>
+		</div>
+		<div id="plads3"  class="seat" 
+			  style="top:5.6em; >
+			<span class="corner">Vest</span>
+			<div class="seatdata" >ÛÛggggggÛÛÛÛÛÛ</div>
+		</div>
+	</div>	
+		
+</body>
+</html>
