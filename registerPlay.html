@@ -2,18 +2,31 @@
 <html>
 <head>
 <style>
-.resultSection {height: 100px; font-size:2.5em;   
-           background-color:#77ff77; border-radius:10px; 
-           padding-left:5px; min-width: 100px;  
-           padding-right:5px; margin:10px; 
-           display:inline-block; text-align:center; 
-           line-height:80px;  position:absolute; top:0px;}
+
+
+.resultSection, #breadcrumb {white-space:nowrap; overflow-x:scroll;
+               height:100px; width:100%; position:relative; 
+                left:0px; top:0px; background-color:#88dd88;}
+#breadcrumb {background-color:#aaddaa;}
+
+.resultElement {font-size:3em; border-radius:10px; padding-right:5px; 
+           margin:10px; display:inline-block; top:0px;}
+
+.crumbElement {font-size:1em; border-radius:10px; padding-right:5px; 
+           margin:10px; display:inline-block; top:0px;}
+.crumbData {font-size:2.5em; text-align:center;}
+
+#channel {white-space:nowrap; overflow:hidden; position:relative; top:0px; 
+          border:solid red 3px; overflow-x:scroll; height:750px; width:100%;}
 .screenElement {position:relative; top:0px;  height:0px; 
                display:inline-block;}
-.trick, .strain, .dbl, .made, .res{position:absolute; width:120px; height:120px; 
-                 border:solid black 1px; font-size:3em; text-align:center; 
+.trick, .strain, .dbl, .made, .res{position:absolute; width:120px; 
+                 height:120px; background-color:#ccffcc; 
+                 border:solid darkgreen 2px; font-size:3em; text-align:center; 
+                 border-radius:5px; 
                  vertical-align:middle; line-height:120px;}
 .res {width:200px;}
+#okButton {display:none;}
 
 .table {position:relative; top:0px; left:2%; 
         width:750px;}
@@ -32,7 +45,13 @@
 <script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 <script>
-$(document).ready(function() {
+
+   var player,trick, strain, dbl, made, res;
+   var selectedColor  = "#77ff77";
+   var unselectedColor = "#ccffcc";
+   var openColor = "#ccffcc";
+
+function setTableDimensions() {
    var screenWidth = Number($(".table").css('width').replace('px',''));
    var spaceWidth = screenWidth/8;
    var verticalSpacing = 8;
@@ -54,46 +73,250 @@ $(document).ready(function() {
    $("#plads3").css({'width':buttonWidth, 'height':height,
                      'left':0, 'top':outerButtonHeight + verticalSpacing});
    $(".table").css('height', 3*outerButtonHeight + 2*verticalSpacing);         
+}
+
+
+function setCallbacks() {
+  $(".seat").on({'touchStart': function() {registerSeat($(this))},
+                 'mousedown': function() {registerSeat($(this))}});  
+                 
+
+  $(".trick").on({'touchStart': function() {registerTrick($(this))},
+                 'mousedown': function() {registerTrick($(this))}});  
+  $(".strain").on({'touchStart': function() {registerStrain($(this))},
+                 'mousedown': function() {registerStrain($(this))}});  
+   $(".dbl").on({'touchStart': function() {registerDbl($(this))},
+                 'mousedown': function() {registerDbl($(this))}});  
+   $(".made").on({'touchStart': function() {registerMade($(this))},
+                 'mousedown': function() {registerMade($(this))}});  
+
+//   $("#okButton").on({'touchStart':function() {gotoConfirm(),
+//                      'mousedown':function() {gotoConfirm()}}})
+
+
+   $("#mobile").on({'touchstart': function(ev) 
+                     {var e = ev.originalEvent; touchMobileStart(e);},
+                    'touchmove': function(ev) 
+                     {var e = ev.originalEvent; touchMove(e);},
+                     'touchend': function(ev)
+                      {var e = ev.originalEvent; touchMobileEnd(e);},
+                     'mousedown': function(ev)
+                      {var e = ev.originalEvent; touchMobileEnd(e);}
+                  });
+                      
+}
+
+$(document).ready(function() {
+  setTableDimensions();
+  setCallbacks();
 });
 
-function scroll() {
-$("#channel").animate({scrollLeft: $("#strains").offset().left}, 3000);
+//CALLBACKS-------------------------------------------
 
- }
+function touchMobileStart(event) {
+   event.preventDefault();
+   $("#mobile").css('background-color', openColor );
+}
+
+function touchMove(event) {
+  event.preventDefault();
+}
+
+var runs = 0;
+
+function getSeatPair(el) {
+    var parent;
+    var child;
+    parent = $(el).closest('.seat');
+    if (parent.length == 1) {
+        child = $(parent).find("div")[0];
+        return([parent, child])
+    }
+    return([]);
+
+    return ([parent, child]);
+}
+
+
+function removeBlock() {
+//   addStatus("removing block");
+   runs = 0;
+}
+
+function touchMobileEnd(ev) {
+    var touch = ev.changedTouches[0];
+    var el = document.elementFromPoint(touch.clientX, touch.clientY);
+    var bottomPair = getSeatPair(el);
+    var i;
+    var oldContent = [];
+    var parent, child;
+    var seatId;
+//    addStatus(ev.ongoingTouches.length);
+     if (bottomPair.length != 0 && runs == 0) {
+//below in order to handle unknown dupllication of end event
+     setTimeout(function(){removeBlock()}, 1000);
+    var bottomId = bottomPair[0].attr('id');
+    var nr = Number(bottomId[bottomId.length-1]);
+    var corner;
+    ev.preventDefault();
+    var offset = (nr <= 2) ?  offset = 2-nr : offset = 2 - nr + 4;
+    runs = runs +1;
+    for (i = 0; i < 4; i++) {
+        seatId = "plads"+i;
+        parent = document.getElementById(seatId);
+        child = $(parent).find("div")[0];
+        corner =  $("#"+seatId + " span").text();
+        oldContent[i] = [corner, child.innerHTML];
+    }
+    for (i = 0; i < 4; i++) {
+        var moveTo = (i+offset)%4;
+        id = "plads"+moveTo;
+        parent = document.getElementById("plads"+moveTo);
+        child = $(parent).find("div")[0];
+        $("#" + id + " span").text(oldContent[i][0]);
+        child.innerHTML = oldContent[i][1]; 
+    }
+    $("#mobile").css('background-color', selectedColor);
+   window.location.href("registerPlay.html");
+
+}
+}
+
+
+
+
+
+ var scrolldist;
+function registerSeat(x) {
+   var res = $(x).find("span").text();
+   res = res + " (" + $(x).find(" div").html() + ") spiller ";
+   $("#resplayer").html(res);
+   player = x.attr('data-id');
+   $(".seat").css('background-color', unselectedColor);
+   $(x).css('background-color', selectedColor);
+   $("#topsection").scrollLeft($("#topsection").width());
+   scrolldist = $("#tricks").offset().left - 100;
+   $("#channel").animate({scrollLeft: scrolldist}, 1000);
+}
+
+function registerTrick(x) {
+   $("#restricks").html(x.html());
+   tricks = Number(x.html());
+   $(".trick").css('background-color', unselectedColor);
+   $(x).css('background-color', selectedColor);
+
+//   scrolldist = $("#strains").offset().left + $("#channel").scrollLeft() - 300; 
+//   $("#channel").animate({scrollLeft: scrolldist}, 100);
+}
+
+function registerStrain(x) {
+   $("#resstrain").html( x.html());
+   strain = x.attr('data-id');
+   $(".strain").css('background-color', unselectedColor);
+   $(x).css('background-color', selectedColor);
+   $("#topsection").scrollLeft($("#topsection").width());
+   scrolldist = $("#dbls").offset().left + $("#channel").scrollLeft() - 300; 
+   $("#channel").animate({scrollLeft: scrolldist}, 1000);
+}
+
+function registerDbl(x) {
+   var res = ""
+   dbl = x.attr('data-id');
+   if (dbl != "P"){
+      res = x.html();
+   }  
+   $("#resdbl").html(res );
+   $(".dbl").css('background-color', unselectedColor);
+   $(x).css('background-color', selectedColor);
+   $("#topsection").scrollLeft($("#topsection").width());
+//   scrolldist = $("#madetricks").offset().left + 
+//                $("#channel").scrollLeft() - 300; 
+//   $("#channel").animate({scrollLeft: scrolldist}, 100);
+}
+
+function registerMade(x) {
+   $("#resmade").html( "- får " + x.html() + " stik");
+   made = Number(x.html());
+   $(".made").css('background-color', unselectedColor);
+   $(x).css('background-color', selectedColor);
+   scrolldist = $("#results").offset().left + 
+                $("#channel").scrollLeft() - 300; 
+   $("#channel").animate({scrollLeft: scrolldist}, 1000);
+   setTimeout(simulateScore, 2000);
+
+}
+
+function simulateScore() {
+   $("#score").html('650');
+   $("#okButton").show(1000);
+}
 
 </script>
 </head>
 <body>
-	<div style="height:300px; width:100%; position:relative; left:0px; top:0px;
-        border:solid black 1px;">
-			<div class="resultSection" style="left:10px;" "id="resplayer" >aaaaaaa</div>
-			<div class="resultSection" style="left:140px;" id="restricks" >a</div>
-			<div class="resultSection" style="left:280px;" id="resstrain" >a</div>
-			<div class="resultSection" style="left:420px;" id="resdbl" ></div>
-			<div class="resultSection" style="left:560px;" id="resmade" ></div>
-			<div class="resultSection" style="left:700px;" id="resplayer" ></div>
-			<div class="resultSection" style="left:840px;" id="resplayer" ></div>
-	</div>
+<div  id="breadcrumb">
+ <div class="crumbElement" id="club" >
+   <span class="title">Klub</span>
+   <div class="crumbData">Pagaten</div>
+ </div>
+ <div class="crumbElement"  id="tournamentForm" >
+   <span class="title">Tournering</span>
+   <div class="crumbData">Pokal</div>
+ </div>
+ <div class="crumbElement"  id="tournamentDate" >
+   <span class="title">Spillet</span>
+   <div class="crumbData">20/2/2016</div>
+ </div>
+ <div class="crumbElement"  id="round" >
+   <span class="title">Runde</span>
+   <div class="crumbData">1</div>
+ </div>
+ <div class="crumbElement"  id="table" >
+   <span class="title">Bord</span>
+   <div class="crumbData">2</div>
+ </div>
+ <div class="crumbElement"  id="deal" >
+   <span class="title">Spil</span>
+   <div class="crumbData">4</div>
+ </div>
+</div>
+
+<div id="topsection" class="resultSection">
+  <div class="resultElement" id="resplayer">
+  </div>
+  <div class="resultElement" id="restricks">
+  </div>
+  <div class="resultElement" id="resstrain">
+  </div>
+  <div class="resultElement" id="resdbl">
+  </div>
+</div>
+<div class="resultSection">
+  <div class="resultElement" id="resmade">
+  </div>
+</div>
 
 
-<div id="channel" style="white-space:nowrap; overflow:hidden; 
-      position:relative; top:0px; 
-      border:solid red 3px; overflow-x:scroll; height:750px; width:100%;">
+
+
+
+
+<div id="channel">
 <div id="table" class="screenElement" style="width:750px">
   <div id="bordnr1" class="table" >
-    <div id="plads0"  class="seat" >
+    <div id="plads0" data-id="N" class="seat" >
       <span class="corner">Nord</span>
-      <div class="seatdata" >AA</div>
+      <div class="seatdata" >AAl</div>
     </div>
-    <div id="plads1"  class="seat" >
+    <div id="plads1" data-id="Ø"  class="seat" >
       <span class="corner">Øst</span>
       <div class="seatdata" >BB</div>
     </div>
-    <div id="plads2"  class="seat" >
+    <div id="plads2"  data-id="S" class="seat" >
       <span class="corner">Syd</span>
       <div class="seatdata" >CC</div>
     </div>
-    <div id="plads3"  class="seat">
+    <div id="plads3"  data-id="V" class="seat">
       <span class="corner">Vest</span>
       <div class="seatdata" >DD</div>
     </div>
@@ -111,7 +334,7 @@ $("#channel").animate({scrollLeft: $("#strains").offset().left}, 3000);
 
 </div>
 <div id="tricks" class="screenElement" 
-     style="width:350px; left:60px; line-height:0px" >
+     style="width:450px; left:110px; line-height:0px" >
    <div class="trick" style="left:0px; top:0px;">1</div>
    <div class="trick" style="left:150px; top:0px;">2</div>
    <div class="trick" style="left:0px;   top:130px;">3</div>
@@ -122,23 +345,24 @@ $("#channel").animate({scrollLeft: $("#strains").offset().left}, 3000);
 </div>
 
 <div id="strains" class="screenElement" 
-     style=" left:0px; line-height:50px; width:170px;" >
-   <div class="strain" style="left:0px; top:0px; font-size: 2.5em;">UT</div>
-   <div class="strain" style="left:0px; top:130px;">&spades;</div>
-   <div class="strain" style="left:0px; top:260px;"">&hearts;</div>
-   <div class="strain" style="left:0px; top:390px;">&clubs;</div>
-   <div class="strain" style="left:0px; top:520px;">&diams;</div>
+     style=" left:0px; line-height:50px; width:220px;" >
+   <div class="strain" data-id="UT"  
+        style="left:0px; top:0px; font-size: 2.5em;">UT</div>
+   <div class="strain" data-id="Sp"  style="left:0px; top:130px;">&spades;</div>
+   <div class="strain" data-id="Hj"  style="left:0px; top:260px;">&hearts;</div>
+   <div class="strain" data-id="Ru"  style="left:0px; top:390px;">&clubs;</div>
+   <div class="strain" data-id="Kl"  style="left:0px; top:520px;">&diams;</div>
 </div>
 
 <div id="dbls" class="screenElement" 
-     style="left:0px;  width:165px;" >
-   <div class="dbl" style="left:0px; top:0px;">Pas</div>
-   <div class="dbl" style="left:0px; top:260px;">Dbl</div>
-   <div class="dbl" style="left:0px; top:520px;">Rdb</div>
+     style="left:0px;  width:215px;" >
+   <div class="dbl" data-id="P" style="left:0px; top:0px;">Pas</div>
+   <div class="dbl" data-id="D" style="left:0px; top:260px;">Dbl</div>
+   <div class="dbl" data-id="R" style="left:0px; top:520px;">Rdb</div>
 </div>
 
 <div id="madetricks" class="screenElement" 
-     style=" left:0px; width:480px;">
+     style=" left:0px; width:530px;">
    <div class="made" style="left:0px;   top:0px;">0</div>
    <div class="made" style="left:150px;  top:0px;">1</div>
    <div class="made" style="left:300px; top:0px;">2</div>
@@ -156,14 +380,13 @@ $("#channel").animate({scrollLeft: $("#strains").offset().left}, 3000);
 </div>
 
 
-<div id="results" class="screenElement">
-  <div class="res" style="left:0px; top:0px;"></div>     
-  <div class="res" style="left:0px; top:200px;"></div>     
+<div id="results" class="screenElement" style="width:300px;">
+  <div id="score" class="res" style="left:0px; top:0px;"></div>     
+  <a id="okButton" class="res" style="left:0px; top:200px;"
+     href="confirm.html">OK</a>     
 </div>
 
 </div>
-
-<button type=""button" onClick="scroll()">asdlæfjk</button>
 
 
 </body>

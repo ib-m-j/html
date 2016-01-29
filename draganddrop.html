@@ -258,7 +258,7 @@ function touchEnd(event) {
              setTimeout(function(){showImage()}, 1000);
              $("#mobile").on({
                  'touchstart': function(ev) 
-                     {var e = ev.originalEvent; touchMobile(e);},
+                     {var e = ev.originalEvent; touchMobileStart(e);},
                  //reusing seatMove
                  'touchmove': function(ev) 
                      {var e = ev.originalEvent; touchMove(e);},
@@ -351,7 +351,7 @@ function touchMobileEnd(ev) {
         child.innerHTML = oldContent[i][1]; 
     }
     $("#mobile").css('background-color', droppedBgColor);
-
+   window.location.assign("registerPlay.html");
 }
 }
 
