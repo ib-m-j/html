@@ -2,11 +2,19 @@
 <html>
 <head>
 <style>
+.resultSection {height: 100px; font-size:2.5em;   
+           background-color:#77ff77; border-radius:10px; 
+           padding-left:5px; min-width: 100px;  
+           padding-right:5px; margin:10px; 
+           display:inline-block; text-align:center; 
+           line-height:80px;  position:absolute; top:0px;}
 .screenElement {position:relative; top:0px;  height:0px; 
                display:inline-block;}
-.trick, .strain, .dbl, .made {position:absolute; width:70px; height:60px; 
+.trick, .strain, .dbl, .made, .res{position:absolute; width:120px; height:120px; 
                  border:solid black 1px; font-size:3em; text-align:center; 
-                 vertical-align:middle; }
+                 vertical-align:middle; line-height:120px;}
+.res {width:200px;}
+
 .table {position:relative; top:0px; left:2%; 
         width:750px;}
 .seat {position:absolute; border:solid 2px; border-color:darkgreen; 
@@ -23,18 +31,16 @@
 <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
 <script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
-<link rel="stylesheet" href="jquery-ui.min.css">
 <script>
 $(document).ready(function() {
    var screenWidth = Number($(".table").css('width').replace('px',''));
    var spaceWidth = screenWidth/8;
    var verticalSpacing = 8;
-   var height = 110;
+   var height = 150;
    var horizontalPadding = 20;
    var outerButtonWidth = (screenWidth - spaceWidth)/2;
    var buttonWidth = outerButtonWidth - 20;
    var outerButtonHeight = height + 4;
-   console.log(Number($(".table").css('width').substring(0,3)));
 
    $("#plads0").css({'width':buttonWidth,'height':height,
                      'left':(screenWidth - (outerButtonWidth))/2,
@@ -47,20 +53,32 @@ $(document).ready(function() {
                      'left':(screenWidth - outerButtonWidth)/2});
    $("#plads3").css({'width':buttonWidth, 'height':height,
                      'left':0, 'top':outerButtonHeight + verticalSpacing});
-   $(".table").css('height', 3*outerButtonHeight + 2*verticalSpacing);                  
-
-
-
+   $(".table").css('height', 3*outerButtonHeight + 2*verticalSpacing);         
 });
+
+function scroll() {
+$("#channel").animate({scrollLeft: $("#strains").offset().left}, 3000);
+
+ }
 
 </script>
 </head>
 <body>
-<div style="position:absolute; height=10px; display:block; border:solid black 1px;"></div>
+	<div style="height:300px; width:100%; position:relative; left:0px; top:0px;
+        border:solid black 1px;">
+			<div class="resultSection" style="left:10px;" "id="resplayer" >aaaaaaa</div>
+			<div class="resultSection" style="left:140px;" id="restricks" >a</div>
+			<div class="resultSection" style="left:280px;" id="resstrain" >a</div>
+			<div class="resultSection" style="left:420px;" id="resdbl" ></div>
+			<div class="resultSection" style="left:560px;" id="resmade" ></div>
+			<div class="resultSection" style="left:700px;" id="resplayer" ></div>
+			<div class="resultSection" style="left:840px;" id="resplayer" ></div>
+	</div>
 
 
 <div id="channel" style="white-space:nowrap; overflow:hidden; 
-      border:solid red 3px; overflow-x:scroll; height:600px">
+      position:relative; top:0px; 
+      border:solid red 3px; overflow-x:scroll; height:750px; width:100%;">
 <div id="table" class="screenElement" style="width:750px">
   <div id="bordnr1" class="table" >
     <div id="plads0"  class="seat" >
@@ -80,8 +98,9 @@ $(document).ready(function() {
       <div class="seatdata" >DD</div>
     </div>
 
-  <div id="mobile" style="width:100px;  
-          position: absolute; bottom:-40px; left:20px; border:solid black 1px; text-align:center;">
+  <div id="mobile" style="width:100px; position: absolute; bottom:-40px; 
+           left:20px; text-align:center; 
+     			background-color:#77ff77; border-radius:5px;">
        <i  id="image" style="font-size:9em; color:#118811; " 
          class="fa fa-mobile"></i>
   </div>
@@ -92,52 +111,60 @@ $(document).ready(function() {
 
 </div>
 <div id="tricks" class="screenElement" 
-     style="width:190px; left:20px; line-height:50px" >
-   <div class="trick" style="left:0px; top:40px;">1</div>
-   <div class="trick" style="left:80px; top:40px;">2</div>
-   <div class="trick" style="left:0px; top:110px;">3</div>
-   <div class="trick" style="left:80px; top:110px;">4</div>
-   <div class="trick" style="left:0px; top:180px;">5</div>
-   <div class="trick" style="left:80px; top:180px;">6</div>
-   <div class="trick" style="left:0px; top:250px;">7</div>
+     style="width:350px; left:60px; line-height:0px" >
+   <div class="trick" style="left:0px; top:0px;">1</div>
+   <div class="trick" style="left:150px; top:0px;">2</div>
+   <div class="trick" style="left:0px;   top:130px;">3</div>
+   <div class="trick" style="left:150px; top:130px;">4</div>
+   <div class="trick" style="left:0px;   top:260px;">5</div>
+   <div class="trick" style="left:150px; top:260px;">6</div>
+   <div class="trick" style="left:0px;   top:390px;">7</div>
 </div>
 
 <div id="strains" class="screenElement" 
-     style=" left:0px; line-height:50px; width:100px;" >
-   <div class="strain" style="left:0px; top:40px; font-size: 2.5em;">UT</div>
-   <div class="strain" style="left:0px; top:110px;">&spades;</div>
-   <div class="strain" style="left:0px; top:180px;">&hearts;</div>
-   <div class="strain" style="left:0px; top:250px;">&clubs;</div>
-   <div class="strain" style="left:0px; top:320px;">&diams;</div>
+     style=" left:0px; line-height:50px; width:170px;" >
+   <div class="strain" style="left:0px; top:0px; font-size: 2.5em;">UT</div>
+   <div class="strain" style="left:0px; top:130px;">&spades;</div>
+   <div class="strain" style="left:0px; top:260px;"">&hearts;</div>
+   <div class="strain" style="left:0px; top:390px;">&clubs;</div>
+   <div class="strain" style="left:0px; top:520px;">&diams;</div>
 </div>
 
 <div id="dbls" class="screenElement" 
-     style="left:0px; line-height:50px; width:100px;" >
-   <div class="dbl" style="left:0px; top:40px;">Dbl</div>
-   <div class="dbl" style="left:0px; top:130px;">Rdb</div>
-   <div class="dbl" style="left:0px; top:220px;">Pas</div>
+     style="left:0px;  width:165px;" >
+   <div class="dbl" style="left:0px; top:0px;">Pas</div>
+   <div class="dbl" style="left:0px; top:260px;">Dbl</div>
+   <div class="dbl" style="left:0px; top:520px;">Rdb</div>
 </div>
 
 <div id="madetricks" class="screenElement" 
-     style=" left:0px; line-height:50px" >
-   <div class="made" style="left:0px;   top:40px;">0</div>
-   <div class="made" style="left:80px;  top:40px;">1</div>
-   <div class="made" style="left:160px; top:40px;">2</div>
-   <div class="made" style="left:0px;   top:110px;">3</div>
-   <div class="made" style="left:80px;  top:110px;">4</div>
-   <div class="made" style="left:160px; top:110px;">5</div>
-   <div class="made" style="left:0px;   top:180px;">6</div>
-   <div class="made" style="left:80px;  top:180px;">7</div>
-   <div class="made" style="left:160px; top:180px;">8</div>
-   <div class="made" style="left:0px;   top:250px;">9</div>
-   <div class="made" style="left:80px;   top:250px;">10</div>
-   <div class="made" style="left:160px;  top:250px;">11</div>
-   <div class="made" style="left:0px; top:320px;">12</div>
-   <div class="made" style="left:80px;   top:320px;">13</div>
+     style=" left:0px; width:480px;">
+   <div class="made" style="left:0px;   top:0px;">0</div>
+   <div class="made" style="left:150px;  top:0px;">1</div>
+   <div class="made" style="left:300px; top:0px;">2</div>
+   <div class="made" style="left:0px;   top:130px;">3</div>
+   <div class="made" style="left:150px;  top:130px;">4</div>
+   <div class="made" style="left:300px; top:130px;">5</div>
+   <div class="made" style="left:0px;   top:260px;">6</div>
+   <div class="made" style="left:150px;  top:260px;">7</div>
+   <div class="made" style="left:300px; top:260px;">8</div>
+   <div class="made" style="left:0px;   top:390px;">9</div>
+   <div class="made" style="left:150px;   top:390px;">10</div>
+   <div class="made" style="left:300px;  top:390px;">11</div>
+   <div class="made" style="left:0px; top:520px;">12</div>
+   <div class="made" style="left:150px;   top:520px;">13</div>
+</div>
+
+
+<div id="results" class="screenElement">
+  <div class="res" style="left:0px; top:0px;"></div>     
+  <div class="res" style="left:0px; top:200px;"></div>     
 </div>
 
 </div>
-</div>
+
+<button type=""button" onClick="scroll()">asdlæfjk</button>
+
 
 </body>
 </html>
