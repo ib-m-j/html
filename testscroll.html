@@ -2,10 +2,10 @@
 <html>
 <head>
 <style>
-.screenelement {position:absolute; top:20px; width:200px; height:600px; 
-                border:solid black 1px;}
-.seat {border:solid 2px; border-color:darkgreen; border-radius:10px; width: 
-       calc((100% - 9em;) / 2); font-size:1.5em; background-color:#ccffcc;
+.screenelement {position:relative; top:20px; height:300px; 
+                border:solid black 1px; display:inline-block; }
+.seat {border:solid 2px; border-color:darkgreen; border-radius:10px; 
+       width:50px; font-size:1.5em; background-color:#ccffcc;
         padding-left: 5px; padding-top:5px;
         text-overflow:clip; overflow:hidden; height:5em;}
 .seatdata {font-size:2.2em; margin: 0.2em auto o.2em; text-align:center; 
@@ -23,79 +23,42 @@
 <script>
 $(document).ready(function() {
     var dialog, form;
+for (var x = 0; x<7; x++) {
+   console.log($("#"+x).attr('id') + " " + $("#"+x).position().left + " " + 
+               $("#"+x).offset().left);
+}
+
 
 });
 
 function scrollTo(x) {
   $("#scrollable").animate({scrollLeft:x});
    
-}
+  console.log($("#scrollable").scrollLeft());
+
+for (var x = 0; x<7; x++) {
+   console.log($("#"+x).attr('id') + " " + $("#"+x).position().left + " " + 
+               $("#"+x).offset().left);
+}}
 
 </script>
 </head>
 <body>
 
-	<button type="button"  onClick="scrollTo(800)" style="width:100px; height:100px;">
+<button type="button"  onClick="scrollTo(1253)" style="width:100px; height:100px;">
 
 
-<div id = "scrollable" style="position:absolute; top:0; left:0; width:100%; height:700px; border:solid black 1px; 
+<div id = "scrollable" style="position:relative; top:0; left:0; width:900px; height:500px; border:solid black 1px; display:inline-block;  
            white-space:nowrap; overflow:hidden;  overflow-x:auto;">
-	<div class="screenelement" style="left:100px; width:720px;">
-		
-<div id="plads0" class="seat" style="margin:0 auto;"><span class="corner">Nord</span>
-  <div class="seatdata" ></div>
-</div>
-
-	    
-<div style="display:table; padding: 8px; width:700px;  table-layout:fixed;
-       white-space:nowrap; overflow:hidden; overflow-x:auto;">
-   <div style="display:table-row; height:7em;">
-     <div id="plads3" class="seat" 
-	  style="display:table-cell;"><span class="corner">Vest</span>
-       <div class="seatdata"></div>
-     </div>
-     
-     <div id="space" 
-	  style="display:table-cell; width:7em; margin: 5px auto;  
-		 block-sizing:border-box;" >
-     </div>
-
-     <div  id="plads1" class="seat" 
-	   style="display:table-cell; "><span class="corner">Øst</span>
-       <div class="seatdata"></div>
-     </div>
-
-   </div>
-</div>
-
-<div id="plads2" class="seat" style="margin: 5px auto;"><span class="corner">Syd</span>
-  <div class="seatdata"></div>
-</div>
-
-<div id="mobile" style="width:150px; text-align:center; 
-        background-color:#77ff77;">
-     <i  id="image" style="font-size:9em; color:#118811; " 
-         class="fa fa-mobile"></i>
-</div>
-
-
-	</div>
-	<div class="screenelement" style="left:900px;">
-    <div class="bidTricks" style="left:10px; top:20px;">1</div>		
-    <div class="bidTricks" style="left:70px; top:20px;">2</div>		
-    <div class="bidTricks" style="left:10px; top:90px;">3</div>		
-    <div class="bidTricks" style="left:70px; top:90px;">4</div>		
-    <div class="bidTricks" style="left:10px; top:160px;">5</div>		
-    <div class="bidTricks" style="left:70px; top:160px;">6</div>		
-    <div class="bidTricks" style="left:10px; top:230px;">7</div>		
-
-	</div>
-	<div class="screenelement" style="left:1100px;"></div>
-	<div class="screenelement" style="left:1300px;"></div>
-	<div class="screenelement" style="left:1500px;"></div>
-	<div class="screenelement" style="left:1700px;"></div>
-	<div class="screenelement" style="left:1900px;"></div>
-	<div class="screenelement" style="left:2100px;"></div>
+   <div id="0"  class="screenelement"  
+        style="left:0px; width:720px; position:relative;">0</div>
+  <div  id="1" class="screenelement" style="left:0px; width:240px;"> 1</div>
+  <div  id="2" class="screenelement" style="left:0px; width:275px;">  2</div>
+  <div  id="3" class="screenelement" style="left:0px; width:300px; ">3</div>
+  <div  id="4" class="screenelement" style="left:0px; width:300px; ">4</div>
+  <div  id="5" class="screenelement" style="left:0px; width:300px; ">5</div>
+  <div  id="6" class="screenelement" style="left:0px; width:300px; ">6</div>
+  <div  id="7" class="screenelement" style="left:0px; width:300px; ">7</div>
 
 </div>
 

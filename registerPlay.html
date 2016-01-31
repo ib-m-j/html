@@ -29,8 +29,9 @@
 #okButton {display:none;}
 
 .table {position:relative; top:0px; left:2%; 
-        width:750px;}
-.seat {position:absolute; border:solid 2px; border-color:darkgreen; 
+        width:95%;}
+.seat, .specialButtons {position:absolute; border:solid 2px; 
+        border-color:darkgreen; 
        border-radius:10px; margin:0;
        font-size:1.5em; background-color:#ccffcc; 
        padding-left: 8px; padding-right:8px;
@@ -38,6 +39,7 @@
 .seatdata {font-size:2.2em; line-height:1.2em; 
            margin: 0.2em auto 0.2em; text-align:center; 
            white-space:nowrap; text-overflow:clip; overflow:hidden;}
+.specialButtons {text-align:center; font-size:3.3em;}
 .corner {}
 
 </style>
@@ -46,7 +48,8 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 <script>
 
-   var player,trick, strain, dbl, made, res;
+   var player, playerName, tricks, strain, strainName, dbl, 
+               dblName, made, score;
    var selectedColor  = "#77ff77";
    var unselectedColor = "#ccffcc";
    var openColor = "#ccffcc";
@@ -60,7 +63,7 @@ function setTableDimensions() {
    var outerButtonWidth = (screenWidth - spaceWidth)/2;
    var buttonWidth = outerButtonWidth - 20;
    var outerButtonHeight = height + 4;
-
+   console.log(screenWidth);
    $("#plads0").css({'width':buttonWidth,'height':height,
                      'left':(screenWidth - (outerButtonWidth))/2,
                      'top':0});
@@ -72,7 +75,14 @@ function setTableDimensions() {
                      'left':(screenWidth - outerButtonWidth)/2});
    $("#plads3").css({'width':buttonWidth, 'height':height,
                      'left':0, 'top':outerButtonHeight + verticalSpacing});
-   $(".table").css('height', 3*outerButtonHeight + 2*verticalSpacing);         
+   var h = 3*outerButtonHeight + 2*verticalSpacing;
+   $(".table").css('height', h);         
+   $("#passButton").css({'left':0, 'width':buttonWidth, 'line-height':2.5, 
+                         'height':height, 'top':h+100})
+   $("#notPlayedButton").css({'left':outerButtonWidth + spaceWidth,  
+                         'width':buttonWidth, 'line-height':2.5,
+                         'height':height, 'top':h+100})
+
 }
 
 
@@ -149,6 +159,7 @@ function touchMobileEnd(ev) {
     var bottomPair = getSeatPair(el);
     var i;
     var oldContent = [];
+    var oldIds = []
     var parent, child;
     var seatId;
 //    addStatus(ev.ongoingTouches.length);
@@ -167,6 +178,7 @@ function touchMobileEnd(ev) {
         child = $(parent).find("div")[0];
         corner =  $("#"+seatId + " span").text();
         oldContent[i] = [corner, child.innerHTML];
+        oldIds[i] = parent.getAttribute("data-id");
     }
     for (i = 0; i < 4; i++) {
         var moveTo = (i+offset)%4;
@@ -175,6 +187,7 @@ function touchMobileEnd(ev) {
         child = $(parent).find("div")[0];
         $("#" + id + " span").text(oldContent[i][0]);
         child.innerHTML = oldContent[i][1]; 
+        parent.setAttribute('data-id', oldIds[i]);
     }
     $("#mobile").css('background-color', selectedColor);
    window.location.href("registerPlay.html");
@@ -182,73 +195,155 @@ function touchMobileEnd(ev) {
 }
 }
 
+function safeSetValue(id, value) {
+   $(id).html(value);
+   $(id).css('color', 'black');
+}
 
-
+function showOffsets() {
+alert($("#table").position().left + "table" +
+      $("#bordnr1").position().left + "bordoffset" +
+      $("#tricks").position().left + "tricks" +
+      $("#strains").position().left + "strains" +
+      $("#dbls").position().left + "dbls" + 
+      $("#madetricks").position().left + "mades" +
+      $("#channel").scrollLeft() + "window");
+}
 
 
  var scrolldist;
 function registerSeat(x) {
    var res = $(x).find("span").text();
    res = res + " (" + $(x).find(" div").html() + ") spiller ";
-   $("#resplayer").html(res);
    player = x.attr('data-id');
+   playerName = res;
+   safeSetValue("#resplayer", playerName);
+//   $("#resplayer").html(playerName);
    $(".seat").css('background-color', unselectedColor);
    $(x).css('background-color', selectedColor);
    $("#topsection").scrollLeft($("#topsection").width());
-   scrolldist = $("#tricks").offset().left - 100;
-   $("#channel").animate({scrollLeft: scrolldist}, 1000);
+   scrolldist = $("#tricks").position().left - 100 + $("#channel").scrollLeft();
+//   showOffsets();
+   $("#channel").animate({scrollLeft: scrolldist}, 700);
+
 }
 
 function registerTrick(x) {
-   $("#restricks").html(x.html());
+   safeSetValue("#restricks", x.html());
    tricks = Number(x.html());
    $(".trick").css('background-color', unselectedColor);
    $(x).css('background-color', selectedColor);
 
-//   scrolldist = $("#strains").offset().left + $("#channel").scrollLeft() - 300; 
-//   $("#channel").animate({scrollLeft: scrolldist}, 100);
+//   scrolldist = $("#strains").position().left - 100  + $("#channel").scrollLeft();
+//        $("#channel").scrollLeft() - 100 
+//   $("#channel").animate({scrollLeft: scrolldist}, 1000);
 }
 
 function registerStrain(x) {
-   $("#resstrain").html( x.html());
+   strainName = x.html();
    strain = x.attr('data-id');
+   safeSetValue("#resstrain", strainName);
+//   $("#resstrain").html( strainName);
    $(".strain").css('background-color', unselectedColor);
    $(x).css('background-color', selectedColor);
    $("#topsection").scrollLeft($("#topsection").width());
-   scrolldist = $("#dbls").offset().left + $("#channel").scrollLeft() - 300; 
-   $("#channel").animate({scrollLeft: scrolldist}, 1000);
+//   scrolldist = $("#dbls").position().left - 100 + $("#channel").scrollLeft(); 
+//   $("#channel").animate({scrollLeft: scrolldist}, 1000);
 }
 
 function registerDbl(x) {
-   var res = ""
+//   var res = ""
+//   if (dbl != "P"){
+//      res = x.html();
+//   }  
+   dblName = x.html();
    dbl = x.attr('data-id');
-   if (dbl != "P"){
-      res = x.html();
-   }  
-   $("#resdbl").html(res );
+   safeSetValue("#resdbl", dblName);
+//   $("#resdbl").html(dblName );
    $(".dbl").css('background-color', unselectedColor);
    $(x).css('background-color', selectedColor);
    $("#topsection").scrollLeft($("#topsection").width());
-//   scrolldist = $("#madetricks").offset().left + 
-//                $("#channel").scrollLeft() - 300; 
-//   $("#channel").animate({scrollLeft: scrolldist}, 100);
+   scrolldist = $("#madetricks").position().left -100 + $("#channel").scrollLeft(); 
+//   showOffsets();
+   $("#channel").animate({scrollLeft: scrolldist}, 1000);
+}
+
+function highlight(id, offset, text) {
+//   showOffsets();
+   $(id).html("mangler " + text);
+   $(id).hide(700);
+   $(id).css('color', 'yellow');
+//   var scrolldist =  $(inputElementId).position().left - 100  + $("#channel").scrollLeft();
+// + 
+//                $("#channel").scrollLeft() - 100; 
+//   scrolldist =  $(id).position().left ;
+//   showOffsets();
+   $("#channel").animate({scrollLeft: offset}, 700);
+   setTimeout(function(){$(id).show(1000);}, 700);
+}
+
+
+function checkData() {
+   if (typeof player == "undefined") { 
+//første screenElement kan ikke få left beregnet korrekt. dergfor hardkodede
+// offsetværdier
+    highlight("#resplayer", 0, "spiller");
+   }
+   else if (typeof tricks == "undefined") {
+     highlight("#restricks", 950, "stik budt");
+   }
+   else if (typeof strain == "undefined") {
+     highlight("#resstrain", 1350, "farve");
+   }
+   else if (typeof dbl == "undefined") {
+     highlight("#resdbl", 1550, "dobler");
+   }
+   else if (typeof made == "undefined") {
+     highlight("#resmade", 1650, "stiktaget");
+   }
+   else { setTimeout(simulateScore, 700);
+   }
 }
 
 function registerMade(x) {
-   $("#resmade").html( "- får " + x.html() + " stik");
-   made = Number(x.html());
+   safeSetValue("#resmade", "- får " + x.html() + " stik");
+//   $("#resmade").html( "- får " + x.html() + " stik");
+   made = x.html();
    $(".made").css('background-color', unselectedColor);
    $(x).css('background-color', selectedColor);
-   scrolldist = $("#results").offset().left + 
+   scrolldist = $("#results").position().left + 
                 $("#channel").scrollLeft() - 300; 
    $("#channel").animate({scrollLeft: scrolldist}, 1000);
-   setTimeout(simulateScore, 2000);
-
+//setTimeout(simulateScore, 700);
+   checkData();
 }
 
 function simulateScore() {
+   score='650';
    $("#score").html('650');
    $("#okButton").show(1000);
+}
+
+function gotoConfirm() {
+  full = "";
+  code = "";
+
+  code = code + player;
+  full= full + " " + playerName;
+  code = code + " " + tricks;
+  full = full + " " + tricks;
+  code = code + " " + strain;
+  full = full + " " + strain;
+  code = code + " " + dbl;
+  full = full + " " + dblName;
+  code = code + " " + made;
+  full = full + " " + " med " + made + " stik";
+  full = full + " " + score + " point."
+
+var parametres = encodeURI("?fullBid="+full+"&codeBid="+code);
+//   alert(parametres);
+//  var parametres = "?fullBid="+full+"&codeBid="+code;
+  window.location.assign("confirm.html"+parametres);
 }
 
 </script>
@@ -302,11 +397,11 @@ function simulateScore() {
 
 
 <div id="channel">
-<div id="table" class="screenElement" style="width:750px">
+<div id="table" class="screenElement" style="width:100%;">
   <div id="bordnr1" class="table" >
     <div id="plads0" data-id="N" class="seat" >
       <span class="corner">Nord</span>
-      <div class="seatdata" >AAl</div>
+      <div class="seatdata" >AA lvery long name with spaces</div>
     </div>
     <div id="plads1" data-id="Ø"  class="seat" >
       <span class="corner">Øst</span>
@@ -320,19 +415,18 @@ function simulateScore() {
       <span class="corner">Vest</span>
       <div class="seatdata" >DD</div>
     </div>
-
-  <div id="mobile" style="width:100px; position: absolute; bottom:-40px; 
+    
+    <div id="mobile" style="width:100px; position: absolute; bottom:5px; 
            left:20px; text-align:center; 
      			background-color:#77ff77; border-radius:5px;">
        <i  id="image" style="font-size:9em; color:#118811; " 
          class="fa fa-mobile"></i>
+    </div>
+  <div  class="specialButtons" id="passButton" > Passet ud</div>
+  <div  class="specialButtons" id="notPlayedButton" style="line-height:150px"> Ikke spillet</div>
   </div>
-
-
-  </div>	
-		
-
 </div>
+
 <div id="tricks" class="screenElement" 
      style="width:450px; left:110px; line-height:0px" >
    <div class="trick" style="left:0px; top:0px;">1</div>
@@ -383,7 +477,7 @@ function simulateScore() {
 <div id="results" class="screenElement" style="width:300px;">
   <div id="score" class="res" style="left:0px; top:0px;"></div>     
   <a id="okButton" class="res" style="left:0px; top:200px;"
-     href="confirm.html">OK</a>     
+     onclick="gotoConfirm()">OK</a>     
 </div>
 
 </div>

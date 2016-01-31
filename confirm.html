@@ -10,7 +10,29 @@
 <script>
 $(document).ready(function() {
 
+var  encoded = ( encodeURI("Øst"));
+var decoded = decodeURI(encoded);
+console.log(encoded);
+console.log(decoded);
+
+
+
+
+res = getUrlVars(location.search);
+   if (!(("fullBid" in res) && ("codeBid" in res))) {
+        alert("error in input " + res); 
+   }
+   $("#fullbid").html(decodeURI(res["fullBid"]));
+   $("#codebid").html(decodeURI(res["codeBid"]));
 });
+
+function getUrlVars() {
+var vars = {};
+var parts = location.search.replace(/[?&]+([^=&]+)=([^&]*)/gi, 
+               function(m,key,value) {vars[key] = value;});
+return vars;
+}
+
 
 function gotoDrag() {
       window.location.assign("draganddrop.html");
@@ -30,8 +52,9 @@ function gotoRegister() {
 
 <div class="vertical" style="border:solid black 1px; 
     position:absolute; top: 200px; left:0px; width:1200px; height:500px;
-    font-size:3em; line-height:300px;" >
-    <div style="position:relative; text-align:center;"> Nord 3 spar 8 stik: -100point</div>
+    font-size:3em; line-height:100px;" >
+    <div id="fullbid" style="position:relative; display:string; text-align:center;"> </div>
+    <div id="codebid" style="position:absolute; bottom:10px;  left:300px; text-align:center;"> </div>
     <Button type="button" style="font-size:2em;position:absolute; left:0px; bottom:0px;" onClick="gotoRegister()"> Ret </Button>
     <Button type="button" style="font-size:2em; position:absolute; right:0px; bottom:0px;" onClick="gotoDrag()"> OK </div>
 </div>
