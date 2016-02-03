@@ -5,10 +5,10 @@
 
 
 .resultSection, #breadcrumb {white-space:nowrap; overflow-x:scroll;
-               height:100px; width:100%; position:relative; 
-                left:0px; top:0px; background-color:#88dd88;}
-#breadcrumb {background-color:#aaddaa;}
-
+                width:100%; position:relative; 
+                left:0px; top:0px; background-color:#aaddaa;}
+#breadcrumb {background-color:white; font-size:2em;}
+.resultSection {height:100px;}
 .resultElement {font-size:3em; border-radius:10px; padding-right:5px; 
            margin:10px; display:inline-block; top:0px;}
 
@@ -344,37 +344,16 @@ var parametres = encodeURI("?fullBid="+full+"&codeBid="+code);
 //   alert(parametres);
 //  var parametres = "?fullBid="+full+"&codeBid="+code;
   window.location.assign("confirm.html"+parametres);
+//   console.log(sessionStorage.state);
 }
 
 </script>
 </head>
 <body>
-<div  id="breadcrumb">
- <div class="crumbElement" id="club" >
-   <span class="title">Klub</span>
-   <div class="crumbData">Pagaten</div>
- </div>
- <div class="crumbElement"  id="tournamentForm" >
-   <span class="title">Tournering</span>
-   <div class="crumbData">Pokal</div>
- </div>
- <div class="crumbElement"  id="tournamentDate" >
-   <span class="title">Spillet</span>
-   <div class="crumbData">20/2/2016</div>
- </div>
- <div class="crumbElement"  id="round" >
-   <span class="title">Runde</span>
-   <div class="crumbData">1</div>
- </div>
- <div class="crumbElement"  id="table" >
-   <span class="title">Bord</span>
-   <div class="crumbData">2</div>
- </div>
- <div class="crumbElement"  id="deal" >
-   <span class="title">Spil</span>
-   <div class="crumbData">4</div>
- </div>
-</div>
+<iframe seamless style="height:120px;" 
+  id="breadcrumb" 
+  src="environment.html?Klub=Pagaten&Turnering=Pokal&Spillet=20/2 2016&Runde=1&Bord=2&Spil=4">
+</iframe>
 
 <div id="topsection" class="resultSection">
   <div class="resultElement" id="resplayer">

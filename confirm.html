@@ -2,29 +2,38 @@
 <html>
 <head>
 <style>
-.vertical { transform: rotate(-90deg); transform-origin: 50% 100%;}
+//.vertical { transform: rotate(-90deg); transform-origin: 50% 100%;}
+#breadcrumb {white-space:nowrap; overflow-x:scroll;
+                width:100%; position:relative; 
+               left:0px; top:0px; background-color:white; }
 </style>
 <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
 <script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 <script>
+
 $(document).ready(function() {
 
-var  encoded = ( encodeURI("Øst"));
-var decoded = decodeURI(encoded);
-console.log(encoded);
-console.log(decoded);
+
+	var h = $(window).height();
+  var  w =  $(window).width();
+	console.log("dims "+h+" "+w);
+	$("#screen").width(h);
+	$("#screen").height(w);
+	$("#screen").css({'top':(h-w)/2, 'left':(w-h)/2});
+	var rotateX = w/2;
+	var rotateY = h/2;
+  $("#screen").css({'transform':'rotate(-90deg)'});
 
 
-
-
-res = getUrlVars(location.search);
-   if (!(("fullBid" in res) && ("codeBid" in res))) {
+	res = getUrlVars(location.search);
+  if (!(("fullBid" in res) && ("codeBid" in res))) {
         alert("error in input " + res); 
    }
-   $("#fullbid").html(decodeURI(res["fullBid"]));
-   $("#codebid").html(decodeURI(res["codeBid"]));
+   $("#fullbid").html(decodeURI(res["fullBid"]) + "h " + h);
+   $("#codebid").html(decodeURI(res["codeBid"]) + "w " + w);
 });
+
 
 function getUrlVars() {
 var vars = {};
@@ -35,11 +44,13 @@ return vars;
 
 
 function gotoDrag() {
-      window.location.assign("draganddrop.html");
+  sessionStorage.clear();
+  window.location.assign("draganddrop.html");
 }
 
 function gotoRegister() {
-      window.location.assign("registerPlay.html");
+  sessionStorage.clear();
+  window.location.assign("registerPlay.html");
 }
 
 
@@ -50,14 +61,26 @@ function gotoRegister() {
 </head>
 <body>
 
-<div class="vertical" style="border:solid black 1px; 
-    position:absolute; top: 200px; left:0px; width:1200px; height:500px;
-    font-size:3em; line-height:100px;" >
-    <div id="fullbid" style="position:relative; display:string; text-align:center;"> </div>
-    <div id="codebid" style="position:absolute; bottom:10px;  left:300px; text-align:center;"> </div>
-    <Button type="button" style="font-size:2em;position:absolute; left:0px; bottom:0px;" onClick="gotoRegister()"> Ret </Button>
-    <Button type="button" style="font-size:2em; position:absolute; right:0px; bottom:0px;" onClick="gotoDrag()"> OK </div>
-</div>
+  <div id="screen"  
+		style="border:solid black 1px; background:green;
+					 position:absolute; font-size:3em; line-height:100px;" >
+		<iframe seamless style="height:120px;" 
+			id="breadcrumb" 
+			src="environment.html">
+		</iframe>
+    <div 
+    <div id="fullbid" 
+			style="position:relative; display:string; text-align:center;"> </div>
+    <div id="codebid" 
+			style="position:absolute; bottom:10px;  left:300px; 
+						 text-align:center;"> </div>
+    <Button type="button" 
+      style="font-size:2em;position:absolute; left:0px; bottom:0px;" 
+			onClick="gotoRegister()"> Ret </Button>
+    <Button type="button" 
+			style="font-size:2em; position:absolute; 
+						 right:0px; bottom:0px;" onClick="gotoDrag()"> OK </Button>
+  </div>
 
 </body>
 </html>

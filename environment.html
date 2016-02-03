@@ -1,0 +1,62 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<style>
+.ribbon {width:100%; height:5em; font-size:1.5em; background-color:white; 
+           white-space:nowrap;  overflow-x:auto;}
+.ribbonElement {display:inline-block; margin-right:15px; border-radius:3px;
+	background-color:white;}
+.ribbonElementContent {text-align:center; font-size:2em; }
+</style>
+<script src="tools.js"></script>
+<script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+<script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+<script>
+
+
+
+
+$(document).ready(function() {
+	var res = getOrderedUrlVars();
+
+//  alert(sessionStorage.state);
+  if (res.length == 0 ) {
+		if (sessionStorage.state) {
+			res = JSON.parse(sessionStorage.state);
+		}
+	}
+
+  if (res.length != 0 ) {
+		for (var x =0; x < res.length; x++) {
+			var child, cloned;
+			if (x>0) {
+				cloned = $("#toplevel .ribbonElement:first").clone();
+			}
+			else {
+				cloned = $("#toplevel .ribbonElement:first");
+				child = $(cloned).find("div")[0];
+			}
+			$("#toplevel").append(cloned);
+			setTextsOfRibbonElement(cloned, res[x]);
+		}
+    sessionStorage.state=JSON.stringify(res);
+	}
+	
+   $("#toplevel").animate({scrollLeft: 10000}, 700);
+});
+
+
+
+//CALLBACKS-------------------------------------------
+
+</script>
+</head>
+<body>
+	<div id="toplevel" class="ribbon" style="top:0px">
+		<div id="club"  class="ribbonElement" ><span></span>
+			<div class="ribbonElementContent"></div>
+		</div>
+	</div>
+</body>
+</html>
