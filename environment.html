@@ -2,10 +2,11 @@
 <html>
 <head>
 <style>
-.ribbon {width:100%; height:5em; font-size:1.5em; background-color:white; 
-           white-space:nowrap;  overflow-x:auto;}
+.ribbon {width:100%; height:5em; font-size:1.5em; 
+  white-space:nowrap;  overflow-x:auto; 
+	background-color:rgba(255,255,255,0);}
 .ribbonElement {display:inline-block; margin-right:15px; border-radius:3px;
-	background-color:white;}
+	background-color:#ccffcc;}
 .ribbonElementContent {text-align:center; font-size:2em; }
 </style>
 <script src="tools.js"></script>
@@ -14,6 +15,12 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 <script>
 
+function setCallbacks() {
+	$('.ribbonElement').on({
+    'touchstart': function() {displayBlock();},
+    'mousedown': function() {displayBlock();},
+	});
+}
 
 
 
@@ -27,28 +34,51 @@ $(document).ready(function() {
 		}
 	}
 
+	setCallbacks();
+
+
   if (res.length != 0 ) {
+
 		for (var x =0; x < res.length; x++) {
 			var child, cloned;
+
 			if (x>0) {
 				cloned = $("#toplevel .ribbonElement:first").clone();
-			}
+				}
 			else {
 				cloned = $("#toplevel .ribbonElement:first");
 				child = $(cloned).find("div")[0];
 			}
+			
 			$("#toplevel").append(cloned);
 			setTextsOfRibbonElement(cloned, res[x]);
+			
 		}
     sessionStorage.state=JSON.stringify(res);
+		$("#toplevel").animate({scrollLeft: 10000}, 700);
+		$("#toplevel .ribbonElement").on({
+			'touchstart': function() {handleSelection();},
+			'mousedown': function() {handleSelection();},
+		});
 	}
 	
-   $("#toplevel").animate({scrollLeft: 10000}, 700);
 });
 
 
 
+function handleSelection() {
+   if (sessionStorage.getItem('blockEnvironment')) {
+		 alert('no change here');
+	 }
+   else {
+		 alert('go ahead');
+	 }
+}
+
+
 //CALLBACKS-------------------------------------------
+
+
 
 </script>
 </head>

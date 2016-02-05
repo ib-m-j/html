@@ -43,6 +43,7 @@
 .corner {}
 
 </style>
+<script src="tools.js"></script>
 <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
 <script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
@@ -63,7 +64,6 @@ function setTableDimensions() {
    var outerButtonWidth = (screenWidth - spaceWidth)/2;
    var buttonWidth = outerButtonWidth - 20;
    var outerButtonHeight = height + 4;
-   console.log(screenWidth);
    $("#plads0").css({'width':buttonWidth,'height':height,
                      'left':(screenWidth - (outerButtonWidth))/2,
                      'top':0});
@@ -113,15 +113,49 @@ function setCallbacks() {
                      'mousedown': function(ev)
                       {var e = ev.originalEvent; touchMobileEnd(e);}
                   });
-                      
+
 }
 
 $(document).ready(function() {
   setTableDimensions();
   setCallbacks();
+
+	var urlVars = getUrlVars();
+  check = urlVars["useState"];
+  if (check && check == "True") {
+    popping();
+	}
 });
 
 //CALLBACKS-------------------------------------------
+function popping(state) {
+  var check = sessionStorage.getItem('statevar');
+  if (check) {
+	  var stateVar = JSON.parse(check);
+	  player = stateVar.shift();
+		playerName = stateVar.shift(); 
+		tricks = stateVar.shift(); 
+		strain = stateVar.shift(); 
+		strainName = stateVar.shift(); 
+		dbl = stateVar.shift();
+		dblName = stateVar.shift(); 
+		made = stateVar.shift(); 
+		score = stateVar.shift();
+	
+	  safeSetValue("#resplayer", playerName);
+	  safeSetValue("#restricks", tricks);
+	  safeSetValue("#resstrain", strainName);
+	  safeSetValue("#resdbl", dblName);
+	  safeSetValue("#resmade", "- får " + made + " stik");
+
+		sessionStorage.removeItem("statevar");
+// $("#score").html('650');
+// $("#okButton").show(1000);
+	}
+
+}
+
+
 
 function touchMobileStart(event) {
    event.preventDefault();
@@ -341,10 +375,10 @@ function gotoConfirm() {
   full = full + " " + score + " point."
 
 var parametres = encodeURI("?fullBid="+full+"&codeBid="+code);
-//   alert(parametres);
-//  var parametres = "?fullBid="+full+"&codeBid="+code;
-  window.location.assign("confirm.html"+parametres);
-//   console.log(sessionStorage.state);
+	var statevar= JSON.stringify( 
+		[player, playerName, tricks, strain, strainName, dbl, dblName, made, score]);
+  sessionStorage.setItem('statevar', statevar);
+	window.location.assign("confirm.html"+parametres);
 }
 
 </script>

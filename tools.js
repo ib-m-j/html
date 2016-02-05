@@ -1,8 +1,7 @@
 function getUrlVars() {
 		var vars = {};
 		var parts = location.search.replace(
-						/[?&]+([^=&]+)=([^&]*)/gi, 
-				function(m,key,value) {vars[key] = value;});
+						/[?&]+([^=&]+)=([^&]*)/gi,function(m,key,value) {vars[key] = value;});
 return vars;
 }
 

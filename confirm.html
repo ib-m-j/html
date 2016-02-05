@@ -5,18 +5,18 @@
 //.vertical { transform: rotate(-90deg); transform-origin: 50% 100%;}
 #breadcrumb {white-space:nowrap; overflow-x:scroll;
                 width:100%; position:relative; 
-               left:0px; top:0px; background-color:white; }
+               left:0px; top:0px; background-color:#ccffcc; }
 </style>
+//<script src="tools.js"></script>
 <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
 <script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 <script>
+var h = $(window).height();
+var  w =  $(window).width();
+var block = 0;
 
-$(document).ready(function() {
-
-
-	var h = $(window).height();
-  var  w =  $(window).width();
+function setAndTurnScreen() {
 	console.log("dims "+h+" "+w);
 	$("#screen").width(h);
 	$("#screen").height(w);
@@ -24,23 +24,37 @@ $(document).ready(function() {
 	var rotateX = w/2;
 	var rotateY = h/2;
   $("#screen").css({'transform':'rotate(-90deg)'});
+}
+
+//function getUrlVars() {
+//var vars = {};
+//var parts = location.search.replace(/[?&]+([^=&]+)=([^&]*)/gi, 
+//               function(m,key,value) {vars[key] = value;});
+//return vars;
+//}
 
 
+
+function insertTexts() {
 	res = getUrlVars(location.search);
   if (!(("fullBid" in res) && ("codeBid" in res))) {
         alert("error in input " + res); 
    }
    $("#fullbid").html(decodeURI(res["fullBid"]) + "h " + h);
    $("#codebid").html(decodeURI(res["codeBid"]) + "w " + w);
+}
+
+	
+$(document).ready(function() {
+  setAndTurnScreen(); 
+  insertTexts();
+  sessionStorage.setItem('blockEnvironment', -1);
+  $(window).unload(function() {
+		sessionStorage.removeItem('blockEnvironment');
+	});
 });
 
 
-function getUrlVars() {
-var vars = {};
-var parts = location.search.replace(/[?&]+([^=&]+)=([^&]*)/gi, 
-               function(m,key,value) {vars[key] = value;});
-return vars;
-}
 
 
 function gotoDrag() {
@@ -49,8 +63,8 @@ function gotoDrag() {
 }
 
 function gotoRegister() {
-  sessionStorage.clear();
-  window.location.assign("registerPlay.html");
+//  sessionStorage.clear();
+  window.location.assign("registerPlay.html?useState=True");
 }
 
 
@@ -64,11 +78,12 @@ function gotoRegister() {
   <div id="screen"  
 		style="border:solid black 1px; background:green;
 					 position:absolute; font-size:3em; line-height:100px;" >
-		<iframe seamless style="height:120px;" 
-			id="breadcrumb" 
-			src="environment.html">
-		</iframe>
-    <div 
+		<div id="banner" >
+			<iframe seamless	 sandbox="allow-same-origin allow-scripts allow-modals" 
+				id="breadcrumb" src="environment.html">
+			</iframe>
+		</div>
+		<div 
     <div id="fullbid" 
 			style="position:relative; display:string; text-align:center;"> </div>
     <div id="codebid" 
