@@ -147,8 +147,20 @@ function popping(state) {
 	  safeSetValue("#resstrain", strainName);
 	  safeSetValue("#resdbl", dblName);
 	  safeSetValue("#resmade", "- får " + made + " stik");
+   
+   $('.seat[data-id='+player+']').css('background-color', selectedColor);
+   $('.trick').filter(
+   function(){return $(this).text() == tricks.toString()}).css(
+   'background-color', selectedColor);
+   $('.strain[data-id='+strain+']').css('background-color', selectedColor);
+   $('.dbl[data-id='+dbl+']').css('background-color', selectedColor);
+   $('.made').filter(
+   function(){return $(this).text() == made.toString()}).css(
+   'background-color', selectedColor);
+	
 
-		sessionStorage.removeItem("statevar");
+
+	sessionStorage.removeItem("statevar");
 // $("#score").html('650');
 // $("#okButton").show(1000);
 	}
