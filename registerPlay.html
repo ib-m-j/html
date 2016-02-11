@@ -129,6 +129,7 @@ $(document).ready(function() {
 
 //CALLBACKS-------------------------------------------
 function popping(state) {
+console.log("in popping");
   var check = sessionStorage.getItem('statevar');
   if (check) {
 	  var stateVar = JSON.parse(check);
@@ -148,6 +149,7 @@ function popping(state) {
 	  safeSetValue("#resdbl", dblName);
 	  safeSetValue("#resmade", "- får " + made + " stik");
    
+console.log("starrting selected colouyrs");
    $('.seat[data-id='+player+']').css('background-color', selectedColor);
    $('.trick').filter(
    function(){return $(this).text() == tricks.toString()}).css(
