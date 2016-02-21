@@ -17,7 +17,7 @@
 .crumbData {font-size:2.5em; text-align:center;}
 
 #channel {white-space:nowrap; overflow:hidden; position:relative; top:0px; 
-          border:solid red 3px; overflow-x:scroll; height:750px; width:100%;}
+          overflow-x:scroll; height:750px; width:100%;}
 .screenElement {position:relative; top:0px;  height:0px; 
                display:inline-block;}
 .trick, .strain, .dbl, .made, .res{position:absolute; width:120px; 
@@ -48,12 +48,12 @@
 <script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 <script>
-
-   var player, playerName, tricks, strain, strainName, dbl, 
-               dblName, made, score;
-   var selectedColor  = "#77ff77";
-   var unselectedColor = "#ccffcc";
-   var openColor = "#ccffcc";
+var pass = 'f';
+var notPlayed = 'f';
+var player, playerName, tricks, strain, strainName, dbl, 
+  dblName, made, score;
+var selectedColor  = "#77ff77";
+var unselectedColor = "#ccffcc";
 
 function setTableDimensions() {
    var screenWidth = Number($(".table").css('width').replace('px',''));
@@ -87,6 +87,17 @@ function setTableDimensions() {
 
 
 function setCallbacks() {
+  $("#passButton").on({
+		'touchStart': function() {registerPass();},
+		'mousedown':function() {registerPass();}
+	});
+
+  $("#notPlayedButton").on({
+		'touchStart': function() {registerNotPlayed();},
+		'mousedown':function() {registerNotPlayed();}
+	});
+
+
   $(".seat").on({'touchStart': function() {registerSeat($(this))},
                  'mousedown': function() {registerSeat($(this))}});  
                  
@@ -128,11 +139,14 @@ $(document).ready(function() {
 });
 
 //CALLBACKS-------------------------------------------
+
 function popping(state) {
 console.log("in popping");
   var check = sessionStorage.getItem('statevar');
   if (check) {
 	  var stateVar = JSON.parse(check);
+		pass = stateVar.shift();
+		notPlayed = stateVar.shift();
 	  player = stateVar.shift();
 		playerName = stateVar.shift(); 
 		tricks = stateVar.shift(); 
@@ -142,38 +156,46 @@ console.log("in popping");
 		dblName = stateVar.shift(); 
 		made = stateVar.shift(); 
 		score = stateVar.shift();
-	
-	  safeSetValue("#resplayer", playerName);
-	  safeSetValue("#restricks", tricks);
-	  safeSetValue("#resstrain", strainName);
-	  safeSetValue("#resdbl", dblName);
-	  safeSetValue("#resmade", "- får " + made + " stik");
-   
-console.log("starrting selected colouyrs");
-   $('.seat[data-id='+player+']').css('background-color', selectedColor);
-   $('.trick').filter(
-   function(){return $(this).text() == tricks.toString()}).css(
-   'background-color', selectedColor);
-   $('.strain[data-id='+strain+']').css('background-color', selectedColor);
-   $('.dbl[data-id='+dbl+']').css('background-color', selectedColor);
-   $('.made').filter(
-   function(){return $(this).text() == made.toString()}).css(
-   'background-color', selectedColor);
-	
 
-
-	sessionStorage.removeItem("statevar");
-// $("#score").html('650');
-// $("#okButton").show(1000);
+		if (pass == 't') {
+			safeSetValue("#resplayer", "Pas");
+			$("#passButton").css('background-color', selectedColor);
+		}
+		else if (notPlayed == 't') {
+			safeSetValue("#resplayer", "Ikke spillet");
+			$("#notPlayedButton").css('background-color', selectedColor);
+		}
+		else {
+			
+			safeSetValue("#resplayer", playerName);
+			safeSetValue("#restricks", tricks);
+			safeSetValue("#resstrain", strainName);
+			safeSetValue("#resdbl", dblName);
+			safeSetValue("#resmade", "- får " + made + " stik");
+			
+			console.log("starrting selected colouyrs");
+			$('.seat[data-id='+player+']').css('background-color', selectedColor);
+			$('.trick').filter(
+				function(){return $(this).text() == tricks.toString()}).css(
+					'background-color', selectedColor);
+			$('.strain[data-id='+strain+']').css('background-color', selectedColor);
+			$('.dbl[data-id='+dbl+']').css('background-color', selectedColor);
+			$('.made').filter(
+				function(){return $(this).text() == made.toString()}).css(
+					'background-color', selectedColor);
+		}
 	}
-
+	
+	sessionStorage.removeItem("statevar");
+	// $("#score").html('650');
+// $("#okButton").show(1000);
 }
 
 
 
 function touchMobileStart(event) {
    event.preventDefault();
-   $("#mobile").css('background-color', openColor );
+   $("#mobile").css('background-color', selectedColor );
 }
 
 function touchMove(event) {
@@ -202,18 +224,18 @@ function removeBlock() {
 }
 
 function touchMobileEnd(ev) {
-    var touch = ev.changedTouches[0];
-    var el = document.elementFromPoint(touch.clientX, touch.clientY);
-    var bottomPair = getSeatPair(el);
-    var i;
-    var oldContent = [];
-    var oldIds = []
-    var parent, child;
-    var seatId;
-//    addStatus(ev.ongoingTouches.length);
-     if (bottomPair.length != 0 && runs == 0) {
-//below in order to handle unknown dupllication of end event
-     setTimeout(function(){removeBlock()}, 1000);
+  var touch = ev.changedTouches[0];
+  var el = document.elementFromPoint(touch.clientX, touch.clientY);
+  var bottomPair = getSeatPair(el);
+  var i;
+  var oldContent = [];
+  var oldIds = []
+  var parent, child;
+  var seatId;
+	//    addStatus(ev.ongoingTouches.length);
+  if (bottomPair.length != 0 && runs == 0) {
+		//below in order to handle unknown dupllication of end event
+    setTimeout(function(){removeBlock()}, 1000);
     var bottomId = bottomPair[0].attr('id');
     var nr = Number(bottomId[bottomId.length-1]);
     var corner;
@@ -221,31 +243,44 @@ function touchMobileEnd(ev) {
     var offset = (nr <= 2) ?  offset = 2-nr : offset = 2 - nr + 4;
     runs = runs +1;
     for (i = 0; i < 4; i++) {
-        seatId = "plads"+i;
-        parent = document.getElementById(seatId);
-        child = $(parent).find("div")[0];
-        corner =  $("#"+seatId + " span").text();
-        oldContent[i] = [corner, child.innerHTML];
-        oldIds[i] = parent.getAttribute("data-id");
+      seatId = "plads"+i;
+      parent = document.getElementById(seatId);
+      child = $(parent).find("div")[0];
+      corner =  $("#"+seatId + " span").text();
+      oldContent[i] = [corner, child.innerHTML];
+      oldIds[i] = parent.getAttribute("data-id");
     }
-    for (i = 0; i < 4; i++) {
-        var moveTo = (i+offset)%4;
-        id = "plads"+moveTo;
-        parent = document.getElementById("plads"+moveTo);
-        child = $(parent).find("div")[0];
-        $("#" + id + " span").text(oldContent[i][0]);
-        child.innerHTML = oldContent[i][1]; 
-        parent.setAttribute('data-id', oldIds[i]);
-    }
-    $("#mobile").css('background-color', selectedColor);
-   window.location.href("registerPlay.html");
-
-}
+			 for (i = 0; i < 4; i++) {
+         var moveTo = (i+offset)%4;
+				 id = "plads"+moveTo;
+				 parent = document.getElementById("plads"+moveTo);
+				 child = $(parent).find("div")[0];
+				 $("#" + id + " span").text(oldContent[i][0]);
+				 child.innerHTML = oldContent[i][1]; 
+				 parent.setAttribute('data-id', oldIds[i]);
+			 }
+		//	window.location.href("registerPlay.html");
+	}
+	$("#mobile").css('background-color', unselectedColor);
 }
 
 function safeSetValue(id, value) {
    $(id).html(value);
    $(id).css('color', 'black');
+}
+
+function resetAllFromPass() {
+player = null; 
+playerName = null; 
+tricks = null; 
+strain = null; 
+strainName = null; 
+dbl = null; 
+dblName = null; 
+made = null; 
+score = 0;
+$(".seat,.trick,.strain,.dbl,.made").css('background-color', unselectedColor);
+$("#resplayer,#restricks,#resstrains,#resdbl,#resmade").html("");
 }
 
 function showOffsets() {
@@ -259,28 +294,35 @@ alert($("#table").position().left + "table" +
 }
 
 
+function resetPassUnplayed() {
+	pass = 'f';
+	notPlayed = 'f';
+	$("#notPlayedButton,#passButton").css('background-color', unselectedColor)
+}
+
  var scrolldist;
 function registerSeat(x) {
-   var res = $(x).find("span").text();
-   res = res + " (" + $(x).find(" div").html() + ") spiller ";
-   player = x.attr('data-id');
-   playerName = res;
-   safeSetValue("#resplayer", playerName);
-//   $("#resplayer").html(playerName);
-   $(".seat").css('background-color', unselectedColor);
-   $(x).css('background-color', selectedColor);
-   $("#topsection").scrollLeft($("#topsection").width());
-   scrolldist = $("#tricks").position().left - 100 + $("#channel").scrollLeft();
-//   showOffsets();
-   $("#channel").animate({scrollLeft: scrolldist}, 700);
-
+  var res = $(x).find("span").text();
+  res = res + " (" + $(x).find(" div").html() + ") spiller ";
+  player = x.attr('data-id');
+  playerName = res;
+  safeSetValue("#resplayer", playerName);
+	//   $("#resplayer").html(playerName);
+  $(".seat").css('background-color', unselectedColor);
+  $(x).css('background-color', selectedColor);
+  $("#topsection").scrollLeft($("#topsection").width());
+  scrolldist = $("#tricks").position().left - 100 + $("#channel").scrollLeft();
+	//   showOffsets();
+  $("#channel").animate({scrollLeft: scrolldist}, 700);
+	resetPassUnplayed();
 }
 
 function registerTrick(x) {
-   safeSetValue("#restricks", x.html());
-   tricks = Number(x.html());
-   $(".trick").css('background-color', unselectedColor);
-   $(x).css('background-color', selectedColor);
+  safeSetValue("#restricks", x.html());
+  tricks = Number(x.html());
+  $(".trick").css('background-color', unselectedColor);
+  $(x).css('background-color', selectedColor);
+	resetPassUnplayed();
 
 //   scrolldist = $("#strains").position().left - 100  + $("#channel").scrollLeft();
 //        $("#channel").scrollLeft() - 100 
@@ -288,15 +330,18 @@ function registerTrick(x) {
 }
 
 function registerStrain(x) {
-   strainName = x.html();
-   strain = x.attr('data-id');
-   safeSetValue("#resstrain", strainName);
-//   $("#resstrain").html( strainName);
-   $(".strain").css('background-color', unselectedColor);
-   $(x).css('background-color', selectedColor);
-   $("#topsection").scrollLeft($("#topsection").width());
-//   scrolldist = $("#dbls").position().left - 100 + $("#channel").scrollLeft(); 
-//   $("#channel").animate({scrollLeft: scrolldist}, 1000);
+  strainName = x.html();
+  strain = x.attr('data-id');
+  safeSetValue("#resstrain", strainName);
+	//   $("#resstrain").html( strainName);
+  $(".strain").css('background-color', unselectedColor);
+  $(x).css('background-color', selectedColor);
+  $("#topsection").scrollLeft($("#topsection").width());
+	resetPassUnplayed();
+
+	
+	//   scrolldist = $("#dbls").position().left - 100 + $("#channel").scrollLeft(); 
+	//   $("#channel").animate({scrollLeft: scrolldist}, 1000);
 }
 
 function registerDbl(x) {
@@ -311,7 +356,9 @@ function registerDbl(x) {
    $(".dbl").css('background-color', unselectedColor);
    $(x).css('background-color', selectedColor);
    $("#topsection").scrollLeft($("#topsection").width());
-   scrolldist = $("#madetricks").position().left -100 + $("#channel").scrollLeft(); 
+  scrolldist = $("#madetricks").position().left -100 + $("#channel").scrollLeft();
+	resetPassUnplayed();
+ 
 //   showOffsets();
    $("#channel").animate({scrollLeft: scrolldist}, 1000);
 }
@@ -349,51 +396,114 @@ function checkData() {
    else if (typeof made == "undefined") {
      highlight("#resmade", 1650, "stiktaget");
    }
-   else { setTimeout(simulateScore, 700);
+   else { 
+
+//        $.post("getscore.asp", 
+//              {"a":"adata", "b":tricks}, 
+//                 function(data, status){
+//                 simulateScore(data);
+//		    });
+
+
+        $.post("getScore.asp", {
+		    "player": player,    
+		    "playerName": playerName,
+		    "tricks":  tricks,    
+		    "strain":  strain,    
+		    "strainName": strainName,
+		    "dbl":  dbl, 	   
+		    "dblName": dblName,   
+		    "made":  made
+		    }, 
+		    function(data,status){simulateScore(data);
+		    });
    }
 }
 
 function registerMade(x) {
-   safeSetValue("#resmade", "- får " + x.html() + " stik");
-//   $("#resmade").html( "- får " + x.html() + " stik");
-   made = x.html();
-   $(".made").css('background-color', unselectedColor);
-   $(x).css('background-color', selectedColor);
-   scrolldist = $("#results").position().left + 
-                $("#channel").scrollLeft() - 300; 
-   $("#channel").animate({scrollLeft: scrolldist}, 1000);
+  safeSetValue("#resmade", "- får " + x.html() + " stik");
+	//   $("#resmade").html( "- får " + x.html() + " stik");
+  made = x.html();
+  $(".made").css('background-color', unselectedColor);
+  $(x).css('background-color', selectedColor);
+  scrolldist = $("#results").position().left + 
+     $("#channel").scrollLeft() - 300; 
+  $("#channel").animate({scrollLeft: scrolldist}, 1000);
 //setTimeout(simulateScore, 700);
-   checkData();
+  checkData();
+	resetPassUnplayed();
 }
 
-function simulateScore() {
-   score='650';
-   $("#score").html('650');
-   $("#okButton").show(1000);
+function registerPass() {
+  resetAllFromPass();
+	simulateScore(0);
+  safeSetValue("#resplayer", "Pas");
+	pass = 't';
+	notPlayed = 'f';
+	$("#passButton").css('background-color', selectedColor);
+	$("#notPlayedButton").css('background-color', unselectedColor);
+  scrolldist = $("#results").position().left + 
+    $("#channel").scrollLeft() - 300; 
+  $("#channel").animate({scrollLeft: scrolldist}, 1000);
+}
+
+function registerNotPlayed() {
+  resetAllFromPass();
+	simulateScore(" -- ");
+  safeSetValue("#resplayer", "Ikke spillet");
+	pass = 'f';
+	notPlayed = 't';
+	$("#passButton").css('background-color', unselectedColor);
+	$("#notPlayedButton").css('background-color', selectedColor);
+  scrolldist = $("#results").position().left + 
+    $("#channel").scrollLeft() - 300; 
+  $("#channel").animate({scrollLeft: scrolldist}, 1000);
+}
+
+
+function simulateScore(returnScore) {
+	score = returnScore;
+  $("#score").html(score);
+  $("#okButton").show(1000);
 }
 
 function gotoConfirm() {
-  full = "";
-  code = "";
+  var full = "";
+  var code = "";
+	var parametres;
+  var statevar;
 
-  code = code + player;
-  full= full + " " + playerName;
-  code = code + " " + tricks;
-  full = full + " " + tricks;
-  code = code + " " + strain;
-  full = full + " " + strain;
-  code = code + " " + dbl;
-  full = full + " " + dblName;
-  code = code + " " + made;
-  full = full + " " + " med " + made + " stik";
-  full = full + " " + score + " point."
+	if (pass == 't') {
+		full = "Pas";
+		code = "Pas";
+	}
+	else if (notPlayed == 't') {
+		full = "Ikke spillet";
+		code = "Ikke spillet";
+	}
+	else {
+		code = code + player;
+		full= full + " " + playerName;
+		code = code + " " + tricks;
+		full = full + " " + tricks;
+		code = code + " " + strain;
+		full = full + " " + strain;
+		code = code + " " + dbl;
+		full = full + " " + dblName;
+		code = code + " " + made;
+		full = full + " " + " med " + made + " stik";
+		full = full + " " + score + " point."
+	}
+	parametres = encodeURI("?fullBid="+full+"&codeBid="+code);
+	statevar= JSON.stringify( 
+		[pass, notPlayed, player, playerName, tricks, strain, strainName, 
+			dbl, dblName, made, score]);
 
-var parametres = encodeURI("?fullBid="+full+"&codeBid="+code);
-	var statevar= JSON.stringify( 
-		[player, playerName, tricks, strain, strainName, dbl, dblName, made, score]);
   sessionStorage.setItem('statevar', statevar);
 	window.location.assign("confirm.html"+parametres);
 }
+
+
 
 </script>
 </head>
@@ -445,7 +555,7 @@ var parametres = encodeURI("?fullBid="+full+"&codeBid="+code);
     
     <div id="mobile" style="width:100px; position: absolute; bottom:5px; 
            left:20px; text-align:center; 
-     			background-color:#77ff77; border-radius:5px;">
+     			background-color:#ccffcc; border-radius:5px;">
        <i  id="image" style="font-size:9em; color:#118811; " 
          class="fa fa-mobile"></i>
     </div>

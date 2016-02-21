@@ -17,7 +17,6 @@ var  w =  $(window).width();
 var block = 0;
 
 function setAndTurnScreen() {
-	console.log("dims "+h+" "+w);
 	$("#screen").width(h);
 	$("#screen").height(w);
 	$("#screen").css({'top':(h-w)/2, 'left':(w-h)/2});
@@ -40,8 +39,8 @@ function insertTexts() {
   if (!(("fullBid" in res) && ("codeBid" in res))) {
         alert("error in input " + res); 
    }
-   $("#fullbid").html(decodeURI(res["fullBid"]) + "h " + h);
-   $("#codebid").html(decodeURI(res["codeBid"]) + "w " + w);
+   $("#fullbid").html(decodeURI(res["fullBid"]));
+   $("#codebid").html(decodeURI(res["codeBid"]));
 }
 
 	
