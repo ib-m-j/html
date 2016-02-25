@@ -397,29 +397,26 @@ function checkData() {
      highlight("#resmade", 1650, "stiktaget");
    }
    else { 
-
-//        $.post("getscore.asp", 
-//              {"a":"adata", "b":tricks}, 
-//                 function(data, status){
-//                 simulateScore(data);
-//		    });
-
-
-        $.post("getScore.asp", {
-		    "player": player,    
-		    "playerName": playerName,
-		    "tricks":  tricks,    
-		    "strain":  strain,    
-		    "strainName": strainName,
-		    "dbl":  dbl, 	   
-		    "dblName": dblName,   
-		    "made":  made
-		    }, 
-		    function(data,status){simulateScore(data);
-		    });
-   }
+		 if (location.hostname != '') {
+       $.post("getScore.asp", {
+		     "player": player,    
+		     "playerName": playerName,
+		     "tricks":  tricks,    
+		     "strain":  strain,    
+		     "strainName": strainName,
+		     "dbl":  dbl, 	   
+		     "dblName": dblName,   
+		     "made":  made
+		   }, 
+		     function(data,status){simulateScore(data);
+		     });
+		 }
+		 else {
+			 simulateScore(234);
+		 }
+	 }
 }
-
+	
 function registerMade(x) {
   safeSetValue("#resmade", "- får " + x.html() + " stik");
 	//   $("#resmade").html( "- får " + x.html() + " stik");
