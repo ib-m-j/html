@@ -258,6 +258,12 @@ function touchMobileEnd(ev) {
 				 $("#" + id + " span").text(oldContent[i][0]);
 				 child.innerHTML = oldContent[i][1]; 
 				 parent.setAttribute('data-id', oldIds[i]);
+         if (oldIds[i] == player) {
+					 $("#" + id).css('background-color', selectedColor);
+				 }
+				 else {
+					 $("#" + id).css('background-color', unselectedColor);
+				 }
 			 }
 		//	window.location.href("registerPlay.html");
 	}
@@ -461,7 +467,7 @@ function registerNotPlayed() {
 function simulateScore(returnScore) {
 	score = returnScore;
   $("#score").html(score);
-  $("#okButton").show(1000);
+  $("#okButton").show(800);
 }
 
 function gotoConfirm() {
