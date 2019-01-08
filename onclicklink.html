@@ -1,0 +1,39 @@
+<html>
+  <style type="text/css">
+    #smallrect
+    {
+    fill: red;
+    }
+    .land
+    {
+    fill: lightblue;
+    fill-opacity: 1;
+    stroke:blue;
+    stroke-opacity: 1;
+    stroke-width:0.5;
+    }
+    
+  </style>
+  
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<script type="text/JavaScript">
+  function showColor(theId) {
+  alert("Color of theaa Rectangle is: "+ 
+  document.getElementById(theId).getAttributeNS(null,"fill"));
+  }
+
+$(document).ready(function(){
+  $(".land").click(function(){
+    alert("I am: " + this.id);
+  });
+});
+  
+</script>
+
+<body>
+  <svg width="100" height="100" >
+    <rect onclick="window.open('file:./linked.html')" width="50" height="50" style="fill:rgb(0,0,255);stroke-width:3;stroke:rgb(0,0,0)">
+  </svg>
+</body>
+</html>
