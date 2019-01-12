@@ -30,7 +30,7 @@
     $("#statename").val(event.target.getAttribute("title"));
     $("#stateid").val(event.target.id);
     $("#"+event.target.id).css("stroke","black");
-    $("#"+event.target.id).css("stroke-width","2px");
+  //  $("#"+event.target.id).css("stroke-width","2px");
       }
 
     function deleteId() {
@@ -81,7 +81,7 @@
     
     $("path").click(function(){
     $("#"+event.target.id).css("stroke","black");
-    $("#"+event.target.id).css("stroke-width","2px");
+   // $("#"+event.target.id).css("stroke-width","2px");
     });
     
     $("svg").click(function(ev){
@@ -89,8 +89,9 @@
     var offset = currentFocusSvg.offset();
     var x = ev.clientX - offset.left;
     var y = ev.clientY - offset.top;
-    $(".display").text('x: ' + x + ', y: ' + y);
     newViewBox = zoomViewBox($("#mainmap").attr("viewBox"), x, y);
+    $(".display").text('x: ' + x + ', y: ' + y + 'stroke: ' + $('.path').css('stroke-width'));
+    //$(".path").css("stroke-width",$(".path").css("stroke-width")/4); 
     currentFocusSvg.attr("viewBox", newViewBox);
     });
 
