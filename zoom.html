@@ -20,6 +20,21 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   
   <script type="text/JavaScript">
+    var zoomIn = true;
+    var mouseDownX;
+    var mouseDownY;
+    var mouseDownMoved=false;
+    var mouseIsDown=false;
+    var originalSvgOffsetX;
+    var originalSvgOffsetY;
+
+    function setZoomIn() {
+    zoomIn = true;
+    }
+    
+    function setZoomOut() {
+    zoomIn = false;
+    }
     
     function showId() {
 //    document.getElementById("stateid").value=event.target.id;
@@ -50,6 +65,9 @@
     }
 
     function zoomViewBox(oldViewBox, relX, relY) {
+    var newWidth=0;
+    var newHeight=0;
+    
     var viewBoxArray = oldViewBox.trim().split(" ");
     var topLeftX = parseInt(viewBoxArray[0]);
     var topLeftY = parseInt(viewBoxArray[1]);
@@ -57,11 +75,19 @@
     var height = parseInt(viewBoxArray[3]);
     var svgWidth = parseInt($("#mainmap").width());
     var svgHeight = parseInt($("#mainmap").height());
-    console.log("svgwidth " + svgWidth);
-    var newWidth = width/2;
-    var newHeight = height/2;
-    var newTopLeftX = relX/svgWidth*width + topLeftX - (newWidth/2)/svgWidth*width;
-    var newTopLeftY = relY/svgHeight*height + topLeftY - (newHeight/2)/svgHeight*height;
+    console.log("svgwidth " + svgWidth + " svgheight " + svgHeight);
+    
+    if (zoomIn) {
+    newWidth = width/2;
+    newHeight = height/2;
+    }
+    else {
+    newWidth = width*2;
+    newHeight = height*2;
+    }
+    
+    var newTopLeftX = relX/svgWidth*width + topLeftX - (newWidth/2);
+    var newTopLeftY = relY/svgHeight*height + topLeftY - (newHeight/2);
     var newViewBox = newTopLeftX.toString()+" "+newTopLeftY.toString()+" "+newWidth.toString()+" "+newHeight.toString();
     console.log("input: " + oldViewBox, relX.toString(), relY.toString());
     console.log("New "+newViewBox);
@@ -84,17 +110,70 @@
    // $("#"+event.target.id).css("stroke-width","2px");
     });
     
-    $("svg").click(function(ev){
+    $("svg").mouseup(function(ev){
+    if (!mouseDownMoved) {
     var currentFocusSvg = $("#mainmap"); 
     var offset = currentFocusSvg.offset();
     var x = ev.clientX - offset.left;
     var y = ev.clientY - offset.top;
     newViewBox = zoomViewBox($("#mainmap").attr("viewBox"), x, y);
-    $(".display").text('x: ' + x + ', y: ' + y + 'stroke: ' + $('.path').css('stroke-width'));
-    //$(".path").css("stroke-width",$(".path").css("stroke-width")/4); 
     currentFocusSvg.attr("viewBox", newViewBox);
+    mouseIsDown = false;
+    mouseDownMoved=false;
+    }
+    else {
+    mouseIsDown = false;
+    mouseDownMoved=false;
+    }
     });
 
+    
+    $("svg").mousedown(function(ev) {
+    var currentFocusSvg = $("#mainmap"); 
+    mouseDownX = ev.clientX;
+    mouseDownY = ev.clientY;
+    mouseIsDown = true;
+    var offset = currentFocusSvg.offset();
+    originalSvgOffsetX = offset.left; 
+    originalSvgOffsetY = offset.top;
+    console.log(mouseDownX, mouseDownY, originalSvgOffsetX, originalSvgOffsetY);
+    });
+   
+    
+    $("svg").mousemove(function(ev) {
+    if (mouseIsDown) {
+    mouseDownMoved=true;
+    var currentFocusSvg = $("#mainmap"); 
+    moveDownX = ev.pageX;
+    moveDownY = ev.pageY;
+    oldViewBox = $("#mainmap").attr("viewBox")
+    //console.log(oldViewBox, moveDownX);
+    var viewBoxArray = oldViewBox.trim().split(" ");
+    var topLeftX = parseInt(viewBoxArray[0]);
+    var topLeftY = parseInt(viewBoxArray[1]);
+    var width =  parseInt(viewBoxArray[2]);
+    var height = parseInt(viewBoxArray[3]);
+    var svgWidth = parseInt($("#mainmap").width());
+    var svgHeight = parseInt($("#mainmap").height());
+    //console.log(topLeftX, topLeftY, moveDownX, mouseDownX);
+    var newViewBox = (originalSvgOffsetX + (mouseDownX-moveDownX)*width/svgWidth).toString()+" "+
+    (originalSvgOffsetY+(mouseDownY-moveDownY)*height/svgHeight).toString()+" "+width.toString()+" " + height.toString();
+    currentFocusSvg.attr("viewBox", newViewBox);
+    }
+    });
+    
+/*    $("svg").contextmenu(function(ev){
+    setZoomOut();
+    var currentFocusSvg = $("#mainmap"); 
+    var offset = currentFocusSvg.offset();
+    var x = ev.clientX - offset.left;
+    var y = ev.clientY - offset.top;
+    newViewBox = zoomViewBox($("#mainmap").attr("viewBox"), x, y);
+    currentFocusSvg.attr("viewBox", newViewBox);
+    ev.preventDefault();
+    });
+
+ */   
     })
     
 </script>
@@ -139,9 +218,10 @@
 <div width="45%" height="300 class="item" vertical-align="top" >
 <p id="displayid">empty</p>
   State Id: <input  id="stateid" type="text" value="state" width="50" height="30" horizontal-align="left"/>
-<textarea id="statename"width="75" height="100" >
-empty
-</textarea>
+<form action="">
+<input type="radio" name="zoomdir" value="in" checked onclick="setZoomIn()" >Zoom in
+<input type="radio" name="zoomdir" value="out" onclick="setZoomOut()">Zoom out
+</form>
 </div>
 </div>
 <span class='display'>ff</span>
