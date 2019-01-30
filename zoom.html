@@ -75,7 +75,7 @@
     var height = parseInt(viewBoxArray[3]);
     var svgWidth = parseInt($("#mainmap").width());
     var svgHeight = parseInt($("#mainmap").height());
-    console.log("svgwidth " + svgWidth + " svgheight " + svgHeight);
+    //console.log("svgwidth " + svgWidth + " svgheight " + svgHeight);
     
     if (zoomIn) {
     newWidth = width/2;
@@ -88,9 +88,10 @@
     
     var newTopLeftX = relX/svgWidth*width + topLeftX - (newWidth/2);
     var newTopLeftY = relY/svgHeight*height + topLeftY - (newHeight/2);
-    var newViewBox = newTopLeftX.toString()+" "+newTopLeftY.toString()+" "+newWidth.toString()+" "+newHeight.toString();
-    console.log("input: " + oldViewBox, relX.toString(), relY.toString());
-    console.log("New "+newViewBox);
+    var newViewBox = newTopLeftX.toString()+" "+newTopLeftY.toString()+" "+
+			newWidth.toString()+" "+newHeight.toString();
+    //console.log("input: " + oldViewBox, relX.toString(), relY.toString());
+    //console.log("New "+newViewBox);
     return newViewBox;
     };
     
@@ -105,10 +106,10 @@
     });
 
     
-    $("path").click(function(){
-    $("#"+event.target.id).css("stroke","black");
+    //$("path").click(function(){
+    //$("#"+event.target.id).css("stroke","black");
    // $("#"+event.target.id).css("stroke-width","2px");
-    });
+   // });
     
     $("svg").mouseup(function(ev){
     if (!mouseDownMoved) {
@@ -136,7 +137,7 @@
     var offset = currentFocusSvg.offset();
     originalSvgOffsetX = offset.left; 
     originalSvgOffsetY = offset.top;
-    console.log(mouseDownX, mouseDownY, originalSvgOffsetX, originalSvgOffsetY);
+    //console.log("Mouse down",mouseDownX, mouseDownY, originalSvgOffsetX, originalSvgOffsetY);
     });
    
     
@@ -144,21 +145,27 @@
     if (mouseIsDown) {
     mouseDownMoved=true;
     var currentFocusSvg = $("#mainmap"); 
-    moveDownX = ev.pageX;
-    moveDownY = ev.pageY;
-    oldViewBox = $("#mainmap").attr("viewBox")
-    //console.log(oldViewBox, moveDownX);
+    //moveDownX = ev.pageX;
+    //moveDownY = ev.pageY;
+    moveDownX = ev.clientX;
+    moveDownY = ev.clientY;
+    oldViewBox = currentFocusSvg.attr("viewBox")
+    //console.log("mose move", oldViewBox, moveDownX, moveDownY);
     var viewBoxArray = oldViewBox.trim().split(" ");
     var topLeftX = parseInt(viewBoxArray[0]);
     var topLeftY = parseInt(viewBoxArray[1]);
     var width =  parseInt(viewBoxArray[2]);
     var height = parseInt(viewBoxArray[3]);
-    var svgWidth = parseInt($("#mainmap").width());
-    var svgHeight = parseInt($("#mainmap").height());
-    //console.log(topLeftX, topLeftY, moveDownX, mouseDownX);
-    var newViewBox = (originalSvgOffsetX + (mouseDownX-moveDownX)*width/svgWidth).toString()+" "+
-    (originalSvgOffsetY+(mouseDownY-moveDownY)*height/svgHeight).toString()+" "+width.toString()+" " + height.toString();
+    var svgWidth = parseInt(currentFocusSvg.width());
+    var svgHeight = parseInt(currentFocusSvg.height());
+    //console.log("mouse move 1", oldViewBox, mouseDownX, mouseDownY);
+    var newViewBox = (topLeftX + (mouseDownX-moveDownX)*width/svgWidth).toString()+
+			" "+(topLeftY+(mouseDownY-moveDownY)*height/svgHeight).toString()+
+			" "+width.toString()+" " + height.toString();
     currentFocusSvg.attr("viewBox", newViewBox);
+		mouseDownX = moveDownX;
+		mouseDownY = moveDownY;
+    //console.log("mouse move 2", newViewBox);
     }
     });
     
